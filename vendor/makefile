@@ -43,3 +43,19 @@ glfw_shared:
 	make glfw_reset_submodule
 	
 	@echo "OK"
+
+# export header
+.PHONY: glfw_header
+glfw_header:
+	# prepare
+	make glfw_error_check
+	make glfw_reset_submodule
+	if [ ! -d "./bin/glfw/include/" ]; then mkdir -p ./bin/glfw/include/; fi;
+	
+	# export
+	cp ./glfw/include/GLFW/glfw3.h ./bin/glfw/include/glfw3.h
+	
+	# reset submodule
+	make glfw_reset_submodule
+	
+	@echo "OK"
