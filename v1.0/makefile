@@ -13,6 +13,11 @@ SOURCE_FILES =                 \
 $(wildcard ./src/*.c)          \
 $(wildcard ./src/graphics/*.c)
 
+# all header files
+HEADER_FILES =                 \
+$(wildcard ./src/*.h)          \
+$(wildcard ./src/graphics/*.h)
+
 # all object files
 OBJECT_FILES = ${SOURCE_FILES:.c=.o}
 
