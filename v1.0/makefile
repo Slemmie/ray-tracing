@@ -26,12 +26,12 @@ VENDOR_PATH = ../vendor/bin/
 
 # links
 LINKS = \
--L $(VENDOR_PATH)glfw/shared/ -Wl,-rpath=$(VENDOR_PATH)glfw/shared/ $(VENDOR_PATH)glfw/shared/libglfw.so.3 \
+-L $(VENDOR_PATH)glfw/shared/ -Wl,-rpath=$(VENDOR_PATH)glfw/shared/ $(VENDOR_PATH)glfw/shared/libglfw.so.3   \
 -L $(VENDOR_PATH)glew/shared/ -Wl,-rpath=$(VENDOR_PATH)glew/shared/ $(VENDOR_PATH)glew/shared/libGLEW.so.2.2 \
 
 # main release target
 release: ${OBJECT_FILES}
-	g++ $(CXX_FLAGS) $^ -o $@ $(LINKS)
+	g++ $(CXX_FLAGS) $^ -o $@ $(CXX_RELEASE_FLAGS) $(LINKS)
 
 # general target for creating object files
 %.o: %.cpp ${HEADER_FILES}
