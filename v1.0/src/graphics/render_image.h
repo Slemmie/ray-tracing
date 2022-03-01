@@ -3,6 +3,9 @@
 
 #pragma once
 
+#include <unordered_map>
+#include <string>
+
 namespace gp {
 	
 	class Single_texture_static_renderer {
@@ -30,6 +33,20 @@ namespace gp {
 		void m_unbind_texture();
 		
 		void m_destruct_texture();
+		
+	private: // shader section
+		
+		unsigned int m_shader_program_id;
+		
+		std::unordered_map <std::string, int> m_shader_uniform_location_map;
+		
+		const size_t m_shader_source_count;
+		const char** m_shader_sources;
+		
+		void m_create_shader();
+		int m_get_shader_uniform_location(const char* uniform_name);
+		unsigned int m_compile_shader(unsigned int shader_type, const char* shader_source);
+		char* m_read_shader_source(const char* filepath);
 		
 	};
 	
