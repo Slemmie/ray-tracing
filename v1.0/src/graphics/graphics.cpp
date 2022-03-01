@@ -14,6 +14,10 @@ namespace gp {
 			return;
 		}
 		is_initialized = true;
+		
+		glfwSetErrorCallback([] (int id, const char* message) -> void {
+			std::cerr << "[glfw error]: " << message << " (error ID: " << id << ")" << std::endl;
+		});
 	}
 	
 } /// namespace gp
