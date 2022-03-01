@@ -58,4 +58,8 @@ namespace gp {
 		glfwSwapInterval(1);
 	}
 	
+	void terminate() {
+		
+	}
+	
 } /// namespace gp
