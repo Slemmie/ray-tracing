@@ -38,6 +38,13 @@ namespace gp {
 			glfwTerminate();
 			exit(EXIT_FAILURE);
 		}
+		
+		glfwMakeContextCurrent(window);
+		
+		// set viewport to match framebuffer size
+		int framebuffer_w, framebuffer_h;
+		glfwGetFramebufferSize(window, &framebuffer_w, &framebuffer_h);
+		glViewport(0, 0, framebuffer_w, framebuffer_h);
 	}
 	
 } /// namespace gp
