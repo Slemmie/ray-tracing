@@ -23,4 +23,13 @@ namespace gp {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
+	void m_bind_texture() {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_texture_id);
+	}
+	
+	void m_unbind_texture() {
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	
 } /// namespace gp
