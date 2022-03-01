@@ -35,6 +35,7 @@ LINKS = \
 # main release target
 release: ${OBJECT_FILES}
 	g++ $(CXX_FLAGS) $^ -o $@ $(CXX_RELEASE_FLAGS) $(LINKS)
+	make clean
 
 # general target for creating object files
 %.o: %.cpp ${HEADER_FILES}
@@ -43,6 +44,7 @@ release: ${OBJECT_FILES}
 # main debug target
 debug: ${DEBUG_OBJECT_FILES}
 	g++ $(CXX_FLAGS) $^ -o $@ $(CXX_DEBUG_FLAGS) $(LINKS)
+	make clean
 
 # general DEBUG target for creating object files
 %_debug.o: %.cpp ${HEADER_FILES}
