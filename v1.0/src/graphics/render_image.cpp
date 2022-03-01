@@ -40,4 +40,10 @@ namespace gp {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
+	void Single_texture_static_renderer::m_destruct_texture() {
+		if (m_texture_id) {
+			glDeleteTextures(1, &m_texture_id);
+		}
+	}
+	
 } /// namespace gp

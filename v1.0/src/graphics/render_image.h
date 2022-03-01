@@ -24,6 +24,8 @@ namespace gp {
 		void m_bind_texture();
 		void m_unbind_texture();
 		
+		void m_destruct_texture();
+		
 	};
 	
 } /// namespace gp
