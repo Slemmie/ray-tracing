@@ -20,3 +20,25 @@ glfw_error_check:
 		false;                           \
 	fi;
 	@echo "OK"
+
+## shared library
+
+# main build
+.PHONY: glfw_shared
+glfw_shared:
+	# prepare
+	make glfw_error_check
+	make glfw_reset_submodule
+	if [ ! -d "./bin/glfw/shared/" ]; then mkdir -p ./bin/glfw/shared/; fi;
+	
+	# build
+	mkdir ./glfw/build/ && cmake -S ./glfw/ -B ./glfw/build/ -DBUILD_SHARED_LIBS=ON
+	cd ./glfw/build/ && make glfw
+	
+	# export
+	cp ./glfw/build/src/libglfw.so.3 ./bin/glfw/shared/libglfw.so.3
+	
+	# reset submodule
+	make glfw_reset_submodule
+	
+	@echo "OK"
