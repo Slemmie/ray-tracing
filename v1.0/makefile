@@ -13,5 +13,8 @@ SOURCE_FILES =                 \
 $(wildcard ./src/*.c)          \
 $(wildcard ./src/graphics/*.c)
 
+# all object files
+OBJECT_FILES = ${SOURCE_FILES:.c=.o}
+
 release:
 	
