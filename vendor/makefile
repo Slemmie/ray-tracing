@@ -70,3 +70,11 @@ glfw_header:
 glew_reset_submodule:
 	git submodule deinit -f ./glew/
 	git submodule update --init ./glew/
+
+# check for missing bits
+.PHONY: glew_error_check
+glew_error_check:
+	@if [ ! -d "./glew/" ]; then         \
+		echo "! glew submodule missing"; \
+		false;                           \
+	fi;
