@@ -58,3 +58,15 @@ glfw_header:
 	make glfw_reset_submodule
 	
 	@echo "OK"
+
+################
+### [ glew ] ###
+################
+
+## utiliy
+
+# reset submodule to its original state
+.PHONY: glew_reset_submodule
+glew_reset_submodule:
+	git submodule deinit -f ./glew/
+	git submodule update --init ./glew/
