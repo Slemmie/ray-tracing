@@ -41,6 +41,11 @@ namespace gp {
 		
 		glfwMakeContextCurrent(window);
 		
+		if (glewInit() != GLEW_OK) {
+			std::cerr << "[fatal]: failed to initialize glew" << std::endl;
+			exit(EXIT_FAILURE);
+		}
+		
 		// set viewport to match framebuffer size
 		int framebuffer_w, framebuffer_h;
 		glfwGetFramebufferSize(window, &framebuffer_w, &framebuffer_h);
