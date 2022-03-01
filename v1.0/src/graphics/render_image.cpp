@@ -11,6 +11,10 @@ namespace gp {
 	m_texture_buffer(nullptr)
 	{ }
 	
+	Single_texture_static_renderer::~Single_texture_static_renderer() {
+		m_destruct_texture();
+	}
+	
 	void Single_texture_static_renderer::update_texture(
 	unsigned char* texture_buffer, int texture_width, int texture_height) {
 		m_texture_width = texture_width;
