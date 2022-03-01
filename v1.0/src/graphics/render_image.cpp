@@ -4,7 +4,8 @@
 
 namespace gp {
 	
-	void update_texture(unsigned char* texture_buffer, int texture_width, int texture_height) {
+	void Single_texture_static_renderer::update_texture(
+	unsigned char* texture_buffer, int texture_width, int texture_height) {
 		m_texture_width = texture_width;
 		m_texture_height = texture_height;
 		m_texture_buffer = texture_buffer;
@@ -23,12 +24,12 @@ namespace gp {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
-	void m_bind_texture() {
+	void Single_texture_static_renderer::m_bind_texture() {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_texture_id);
 	}
 	
-	void m_unbind_texture() {
+	void Single_texture_static_renderer::m_unbind_texture() {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
