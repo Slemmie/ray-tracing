@@ -20,7 +20,6 @@ glfw_error_check:
 		echo "! glfw submodule missing"; \
 		false;                           \
 	fi;
-	@echo "OK"
 
 ## shared library
 
