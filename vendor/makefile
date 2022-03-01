@@ -82,19 +82,22 @@ glew_error_check:
 ## shared library
 
 # main build
+# glew generates the header based on the build; also export header from here
 .PHONY: glew_shared
 glew_shared:
 	# prepare
 	make glew_error_check
 	make glew_reset_submodule
 	if [ ! -d "./bin/glew/shared/" ]; then mkdir -p ./bin/glew/shared/; fi;
+	if [ ! -d "./bin/glew/include/" ]; then mkdir -p ./bin/glew/include/; fi;
 	
 	# build
 	cd ./glew/auto/ && make
 	cd ./glew/ && make
 	
 	# export
-	cp ./glew/lib/libGLEW.so.2.2 ./bin/glew/shared/libGLEW.so.2.2 
+	cp ./glew/lib/libGLEW.so.2.2 ./bin/glew/shared/libGLEW.so.2.2
+	cp ./glew/include/GL/glew.h ./bin/glew/include/glew.h
 	
 	# reset submodule
 	make glew_reset_submodule
