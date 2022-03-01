@@ -7,6 +7,7 @@
 
 namespace gp {
 	
+	// must be called before using any other glfw/glew functionality
 	void init();
 	
 } /// namespace gp
