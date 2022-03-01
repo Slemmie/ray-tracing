@@ -59,7 +59,13 @@ namespace gp {
 	}
 	
 	void terminate() {
-		
+		// make sure we do not re-terminate
+		static bool is_terminated = false;
+		if (is_terminated) {
+			std::cerr << "[warning]: attempted to re-terminate graphics" << std::endl;
+			return;
+		}
+		is_terminated = true;
 	}
 	
 } /// namespace gp
