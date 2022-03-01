@@ -8,5 +8,10 @@ CXX_DEBUG_FLAGS = -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG
 # main target just builds release
 all: release
 
+# all cpp source files
+SOURCE_FILES =                 \
+$(wildcard ./src/*.c)          \
+$(wildcard ./src/graphics/*.c)
+
 release:
 	
