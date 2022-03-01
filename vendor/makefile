@@ -1,4 +1,5 @@
 # makefile for building and/or exporting vendor modules
+# exports to ./bin/...
 
 ################
 ### [ glfw ] ###
