@@ -9,8 +9,8 @@ namespace gp {
 		
 	public:
 		
-		
-		
+		void update_texture(unsigned char* texture_buffer, int texture_width, int texture_height);
+				
 	private: // texture section
 		
 		unsigned int m_texture_id;
