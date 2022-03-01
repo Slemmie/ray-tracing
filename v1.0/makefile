@@ -21,6 +21,9 @@ $(wildcard ./src/graphics/*.h)
 # all object files
 OBJECT_FILES = ${SOURCE_FILES:.cpp=.o}
 
+# seperate debug object files
+DEBUG_OBJECT_FILES = ${SOURCE_FILES:.cpp=_debug.o}
+
 # vendor binaries/headers directory path
 VENDOR_PATH = ../vendor/bin/
 
@@ -36,6 +39,14 @@ release: ${OBJECT_FILES}
 # general target for creating object files
 %.o: %.cpp ${HEADER_FILES}
 	g++ $(CXX_FLAGS) -c $< -o $@ $(CXX_RELEASE_FLAGS) -I $(VENDOR_PATH)
+
+# main debug target
+debug: ${DEBUG_OBJECT_FILES}
+	g++ $(CXX_FLAGS) $^ -o $@ $(CXX_DEBUG_FLAGS) $(LINKS)
+
+# general DEBUG target for creating object files
+%_debug.o: %.cpp ${HEADER_FILES}
+	g++ $(CXX_FLAGS) -c $< -o $@ $(CXX_DEBUG_FLAGS) -I $(VENDOR_PATH)
 
 # cleaning up temporary files
 .PHONY: clean
