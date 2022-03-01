@@ -25,12 +25,13 @@ OBJECT_FILES = ${SOURCE_FILES:.cpp=.o}
 DEBUG_OBJECT_FILES = ${SOURCE_FILES:.cpp=_debug.o}
 
 # vendor binaries/headers directory path
-VENDOR_PATH = ../vendor/bin/
+VENDOR_PATH = $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))/../vendor/bin/
 
 # links
 LINKS = \
 -L $(VENDOR_PATH)glfw/shared/ -Wl,-rpath=$(VENDOR_PATH)glfw/shared/ $(VENDOR_PATH)glfw/shared/libglfw.so.3   \
 -L $(VENDOR_PATH)glew/shared/ -Wl,-rpath=$(VENDOR_PATH)glew/shared/ $(VENDOR_PATH)glew/shared/libGLEW.so.2.2 \
+-lGL
 
 # main release target
 release: ${OBJECT_FILES}
