@@ -6,6 +6,8 @@
 
 namespace gp {
 	
+	GLFWwindow* window;
+	
 	void init() {
 		// make sure we do not re-init
 		static bool is_initialized = false;
@@ -28,6 +30,14 @@ namespace gp {
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+		
+		// create the main window
+		window = glfwCreateWindow(1280, 760, "ray-tracing", nullptr, nullptr);
+		if (!window) {
+			std::cerr << "[fatal]: failed to create window" << std::endl;
+			glfwTerminate();
+			exit(EXIT_FAILURE);
+		}
 	}
 	
 } /// namespace gp
