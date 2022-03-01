@@ -9,6 +9,8 @@ namespace gp {
 		
 	public:
 		
+		Single_texture_static_renderer();
+		
 		void update_texture(unsigned char* texture_buffer, int texture_width, int texture_height);
 				
 	private: // texture section
