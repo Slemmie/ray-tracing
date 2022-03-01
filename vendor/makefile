@@ -78,3 +78,25 @@ glew_error_check:
 		echo "! glew submodule missing"; \
 		false;                           \
 	fi;
+
+## shared library
+
+# main build
+.PHONY: glew_shared
+glew_shared:
+	# prepare
+	make glew_error_check
+	make glew_reset_submodule
+	if [ ! -d "./bin/glew/shared/" ]; then mkdir -p ./bin/glew/shared/; fi;
+	
+	# build
+	cd ./glew/auto/ && make
+	cd ./glew/ && make
+	
+	# export
+	cp ./glew/lib/libGLEW.so.2.2 ./bin/glew/shared/libGLEW.so.2.2 
+	
+	# reset submodule
+	make glew_reset_submodule
+	
+	@echo "OK"
