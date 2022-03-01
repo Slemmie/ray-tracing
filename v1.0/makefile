@@ -9,9 +9,9 @@ CXX_DEBUG_FLAGS = -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG
 all: release
 
 # all cpp source files
-SOURCE_FILES =                 \
-$(wildcard ./src/*.c)          \
-$(wildcard ./src/graphics/*.c)
+SOURCE_FILES =                   \
+$(wildcard ./src/*.cpp)          \
+$(wildcard ./src/graphics/*.cpp)
 
 # all header files
 HEADER_FILES =                 \
@@ -19,7 +19,20 @@ $(wildcard ./src/*.h)          \
 $(wildcard ./src/graphics/*.h)
 
 # all object files
-OBJECT_FILES = ${SOURCE_FILES:.c=.o}
+OBJECT_FILES = ${SOURCE_FILES:.cpp=.o}
 
-release:
-	
+# vendor binaries/headers directory path
+VENDOR_PATH = ../vendor/bin/
+
+# main release target
+release: ${OBJECT_FILES}
+	g++ $(CXX_FLAGS) $^ -o $@
+
+# general target for creating object files
+%.o: %.cpp ${HEADER_FILES}
+	g++ $(CXX_FLAGS) -c $< -o $@ $(CXX_RELEASE_FLAGS) -I $(VENDOR_PATH)
+
+# cleaning up temporary files
+.PHONY: clean
+clean:
+	find . -name "*.o" -type f -delete
