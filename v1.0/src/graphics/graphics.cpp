@@ -66,6 +66,11 @@ namespace gp {
 			return;
 		}
 		is_terminated = true;
+		
+		if (window) {
+			glfwDestroyWindow(window);
+		}
+		glfwTerminate();
 	}
 	
 } /// namespace gp
