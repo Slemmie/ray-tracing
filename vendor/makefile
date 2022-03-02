@@ -103,3 +103,15 @@ glew_shared:
 	make glew_reset_submodule
 	
 	@echo "OK"
+
+###############
+### [ glm ] ###
+###############
+
+## utiliy
+
+# reset submodule to its original state
+.PHONY: glm_reset_submodule
+glm_reset_submodule:
+	git submodule deinit -f ./glm/
+	git submodule update --init ./glm/
