@@ -103,3 +103,39 @@ glew_shared:
 	make glew_reset_submodule
 	
 	@echo "OK"
+
+###############
+### [ glm ] ###
+###############
+
+## utiliy
+
+# reset submodule to its original state
+.PHONY: glm_reset_submodule
+glm_reset_submodule:
+	git submodule deinit -f ./glm/
+	git submodule update --init ./glm/
+
+# check for missing bits
+.PHONY: glm_error_check
+glm_error_check:
+	@if [ ! -d "./glm/" ]; then         \
+		echo "! glm submodule missing"; \
+		false;                          \
+	fi;
+
+# export headers
+.PHONY: glm_headers
+glm_headers:
+	# prepare
+	make glm_error_check
+	make glm_reset_submodule
+	if [ ! -d "./bin/glm/include/" ]; then mkdir -p ./bin/glm/include/; fi;
+	
+	# export
+	cp -r ./glm/glm/* ./bin/glm/include/
+	
+	# reset submodule
+	make glm_reset_submodule
+	
+	@echo "OK"
