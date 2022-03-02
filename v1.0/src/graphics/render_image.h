@@ -50,6 +50,14 @@ namespace gp {
 		unsigned int m_compile_shader(unsigned int shader_type, const char* shader_source);
 		char* m_read_shader_source(const char* filepath);
 		
+		inline void m_bind_shader() const {
+			glUseProgram(m_shader_program_id);
+		}
+		
+		inline void m_unbind_shader() const {
+			glUseProgram(0);
+		}
+		
 		void m_destruct_shader_program();
 		
 	};
