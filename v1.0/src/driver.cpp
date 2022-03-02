@@ -8,6 +8,7 @@
 #include "ray.h"
 #include "hittable_list.h"
 #include "sphere.h"
+#include "camera.h"
 
 #include <vector>
 #include <algorithm>
@@ -42,32 +43,36 @@ int main() {
 	//int height = gp::window_height;
 	
 	double aspect_ratio = (double) gp::window_width / (double) gp::window_height;
-	int im_w = gp::window_width * 4;
+	int im_w = gp::window_width / 2;
 	int im_h = static_cast <int> ((double) im_w / aspect_ratio);
+	int samples_per_pixel = 100;
 	
 	Hittable_list world;
 	world.push(std::make_shared <Sphere> (vec3(0.0, 0.0, -1.0), 0.5));
 	world.push(std::make_shared <Sphere> (vec3(0.0, -100.5, -1.0), 100.0));
 	world.push(std::make_shared <Sphere> (vec3(-2.0, 0.75, -2.0), 0.3));
 	
+	Camera camera;
+	
 	double vp_h = 2.0;
 	double vp_w = aspect_ratio * vp_h;
-	double focal_length = 1.0;
-	
-	vec3 origin = vec3(0.0, 0.0, 0.0);
-	vec3 horizontal = vec3(vp_w, 0.0, 0.0);
-	vec3 vertical = vec3(0.0, vp_h, 0.0);
-	vec3 low_lef_corner = origin - horizontal / 2.0 - vertical / 2.0 - vec3(0.0, 0.0, focal_length);
 	
 	vec3d scr[im_w * im_h];
 	
 	for (int j = im_h - 1; j >= 0; j--) {
 		for (int i = 0; i < im_w; i++) {
-			double u = double(i) / double(im_w - 1);
-			double v = double(j) / double(im_h - 1);
-			Ray ray(origin, low_lef_corner + u * horizontal + v * vertical - origin);
-			vec3 color = ray_color(ray, world);
-			scr[j * im_w + i] = color * 255.999;
+			vec3 color = vec3(0.0, 0.0, 0.0);
+			for (int k = 0; k < samples_per_pixel; k++) {
+				auto u = (i + Random::real()) / (im_w - 1);
+				auto v = (j + Random::real()) / (im_h - 1);
+				Ray ray = camera.get_ray(u, v);
+				color += ray_color(ray, world);
+			}
+			color /= (double) samples_per_pixel;
+			color.r() = clamp(color.r(), 0.0, 0.999);
+			color.g() = clamp(color.g(), 0.0, 0.999);
+			color.b() = clamp(color.b(), 0.0, 0.999);
+			scr[j * im_w + i] = color * 256.0;
 		}
 	}
 	

@@ -27,8 +27,8 @@ public:
 		m_low_lef_corner = m_origin - m_horizontal / 2.0 - m_vertical / 2.0 - vec3(0.0, 0.0, focal_length);
 	}
 	
-	constexpr Ray get_ray(double u, double v) const {
-		return Ray(m_origin, low_lef_corner + u * m_horizontal + v * m_vertical - m_origin);
+	constexpr Rayd get_ray(double u, double v) const {
+		return Ray(m_origin, m_low_lef_corner + u * m_horizontal + v * m_vertical - m_origin);
 	}
 	
 private:
