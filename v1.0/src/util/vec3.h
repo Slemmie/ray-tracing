@@ -191,6 +191,13 @@ public:
 		return v - (A) 2 * dot(v, n) * n;
 	}
 	
+	static constexpr vec3 <A> refract(const vec3 <A>& uv, const vec3 <A>& n, double etai_over_etat) {
+		auto cos_theta = fmin(dot(-uv, n), (A) 1);
+		vec3 <A> r_out_perp = etai_over_etat * (uv + cos_theta * n);
+		vec3 <A> r_out_parr = -sqrt(fabs((A) 1 - r_out_perp.length_squared())) * n;
+		return r_out_perp + r_out_parr;
+	}
+	
 private:
 	
 	A m_data[3];

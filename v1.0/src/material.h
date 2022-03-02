@@ -68,3 +68,41 @@ private:
 	double m_fuzz;
 	
 };
+
+class Dielectric : public Material {
+	
+public:
+	
+	Dielectric(double _refraction_index) :
+	m_refraction_index(_refraction_index)
+	{ }
+	
+	virtual bool scatter(const Rayd& ray, const Hit_record& hit_record,
+	vec3d& attenuation, Rayd& scattered) const override {
+		attenuation = vec3(1.0, 1.0, 1.0);
+		double refraction_ratio = hit_record.front_face ? (1.0 / m_refraction_index) : m_refraction_index;
+		vec3 unit_direction = ray.direction().unit_vector();
+		double cos_theta = fmin(dot(-unit_direction, hit_record.normal), 1.0);
+		double sin_theta = sqrt(1.0 - cos_theta * cos_theta);
+		bool cannot_refract = refraction_ratio * sin_theta > 1.0;
+		vec3 direction;
+		if (cannot_refract || m_reflectance(cos_theta, refraction_ratio) > Random::real()) {
+			direction = vec3d::reflect(unit_direction, hit_record.normal);
+		} else {
+			direction = vec3d::refract(unit_direction, hit_record.normal, refraction_ratio);
+		}
+		scattered = Ray(hit_record.point, direction);
+		return true;
+	}
+	
+private:
+	
+	double m_refraction_index;
+	
+	static double m_reflectance(double cos, double ref) {
+		auto r0 = (1.0 - ref) / (1.0 + ref);
+		r0 *= r0;
+		return r0 + (1.0 - r0) * pow((1.0 - cos), 5.0);
+	}
+	
+};
