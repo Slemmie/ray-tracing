@@ -16,7 +16,7 @@ public:
 	inline static double real() {
 		static std::random_device device;
 		static std::mt19937 generator(device());
-		static std::uniform_real_distribution <double> distribution(0.0, 0.999999);
+		static std::uniform_real_distribution <double> distribution(0.0, 1.0);
 		return distribution(generator);
 	}
 	
