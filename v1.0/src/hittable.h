@@ -13,6 +13,14 @@ struct Hit_record {
 	
 	double t;
 	
+	bool front_face;
+	
+	// normal points against the ray
+	inline void set_face_normal(const Rayd& ray, const vec3d& outward_normal) {
+		front_face = dot(ray.direction(), outward_normal) < 0.0;
+		normal = front_face ? outward_normal : -outward_normal;
+	}
+	
 };
 
 class Hittable {
