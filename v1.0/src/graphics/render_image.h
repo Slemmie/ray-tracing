@@ -19,7 +19,7 @@ namespace gp {
 		// on every frame
 		void on_update();
 		
-		void update_texture(unsigned char* texture_buffer, int texture_width, int texture_height);
+		void update_texture(const unsigned char* texture_buffer, int texture_width, int texture_height);
 		
 	private: // texture section
 		

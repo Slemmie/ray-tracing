@@ -29,7 +29,7 @@ namespace gp {
 	}
 	
 	void Single_texture_static_renderer::update_texture(
-	unsigned char* texture_buffer, int texture_width, int texture_height) {
+	const unsigned char* texture_buffer, int texture_width, int texture_height) {
 		m_texture_width = texture_width;
 		m_texture_height = texture_height;
 		m_texture_buffer = texture_buffer;
