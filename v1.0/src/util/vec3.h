@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "random.h"
+
 #include <cassert>
 #include <cmath>
 
@@ -137,12 +139,12 @@ public:
 		v1[0] * v2[1] - v1[1] * v2[0]);
 	}
 	
-	inline vec3& normalize() {
+	inline vec3 <A>& normalize() {
 		(*this) /= length();
 		return *this;
 	}
 	
-	constexpr vec3 unit_vector() const {
+	constexpr vec3 <A> unit_vector() const {
 		return (*this) / length();
 	}
 	
@@ -152,6 +154,23 @@ public:
 	
 	constexpr A length() const {
 		return std::sqrt(length_squared());
+	}
+	
+	static inline vec3 <A> random() {
+		return vec3 <A>(Random::real(), Random::real(), Random::real());
+	}
+	
+	static inline vec3 <A> random(A min, A max) {
+		return vec3 <A>(Random::real(min, max), Random::real(min, max), Random::real(min, max));
+	}
+	
+	static inline vec3 <A> random_in_unit_sphere() {
+		while (true) {
+			vec3 <A> point = vec3 <A>::random((A) -1, (A) 1);
+			if (point.length_squared() < (A) 1) {
+				return point;
+			}
+		}
 	}
 	
 private:
