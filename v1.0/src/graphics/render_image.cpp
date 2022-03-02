@@ -2,9 +2,26 @@
 
 #include "renderer_image.h"
 
+
+
 #include <iostream>
+#include <vector>
 
 namespace gp {
+	
+	struct Vertex {
+		
+		float x, y;
+		float tx, ty;
+		
+		Vertex(float _x, float _y, float _ty, float _ty) :
+		x(_x), y(_y), tx(_tx), ty(_ty)
+		{ }
+		
+	};
+	
+	extern int window_width;
+	extern int window_height;
 	
 	Single_texture_static_renderer::Single_texture_static_renderer() :
 	m_texture_id(0),
@@ -14,18 +31,72 @@ namespace gp {
 	m_shader_program_id(0),
 	m_shader_source_count(2),
 	m_shader_sources({ "./glsl/STST_vertex.glsl", "glsl/STST_fragment.glsl" }),
-	m_shader_source_types({ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER })
+	m_shader_source_types({ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER }),
+	m_vao(0),
+	m_vbo(0),
+	m_ebo(0)
 	{
 		m_create_shader_program();
+		
+		std::vector <Vertex> vertices = {
+			Vertex(-1.0f, -1.0f, 0.0f, 0.0f), // top left
+			Vertex(+1.0f, -1.0f, 1.0f, 0.0f), // top right
+			Vertex(+1.0f, +1.0f, 1.0f, 1.0f), // bottom left
+			Vertex(-1.0f, +1.0f, 0.0f, 1.0f)  // bottom right
+		};
+		
+		std::vector <uint32_t> indices = {
+			0, 1, 2, // tl -> tr -> bl
+			2, 3, 0  // tr -> br -> bl
+		};
+		
+		m_bind_shader();
+		
+		glGenVertexArrays(1, &m_vao);
+		glGenBuffers(1, &m_vbo);
+		glGenBuffers(1, &m_ebo);
+		glBindVertexArray(m_vao);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indices.size(), indices.data(), GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(float) * 2));
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+		
+		glUniform1i(m_get_shader_uniform_location("u_texture"), (int32_t) 0);
+		
+		m_unbind_shader();
 	}
 	
 	Single_texture_static_renderer::~Single_texture_static_renderer() {
 		m_destruct_texture();
 		m_destruct_shader_program();
+		
+		glDeleteVertexArrays(1, &m_vao);
+		glDeleteBuffers(1, &m_vbo);
+		glDeleteBuffers(1, &m_ebo);
 	}
 	
 	void Single_texture_static_renderer::on_update() {
+		m_bind_shader();
+		m_bind_texture();
+		glBindVertexArray(m_vao);
 		
+		glm::mat4 proj = glm::ortho(
+		-float(window_width) / 2.0f, float(window_width) / 2.0f,
+		-float(window_height) / 2.0f, float(window_height) / 2.0f,
+		-1.0f, 1.0f);
+		m_shader->set_uniform_mat4("u_proj", proj);
+		
+		glDrawElements(GL_TRIANGLES, 2 * 3, GL_UNSIGNED_INT, (void*) 0);
+		
+		glBindVertexArray(0);
+		m_unbind_texture();
+		m_unbind_shader();
 	}
 	
 	void Single_texture_static_renderer::update_texture(
@@ -48,12 +119,12 @@ namespace gp {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
-	void Single_texture_static_renderer::m_bind_texture() {
+	void Single_texture_static_renderer::m_bind_texture() const {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_texture_id);
 	}
 	
-	void Single_texture_static_renderer::m_unbind_texture() {
+	void Single_texture_static_renderer::m_unbind_texture() const {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
@@ -180,6 +251,14 @@ namespace gp {
 		fclose(file);
 		
 		return buffer;
+	}
+	
+	void m_bind_shader() const {
+		glUseProgram(m_shader_program_id);
+	}
+	
+	void m_unbind_shader() const {
+		glUseProgram(0);
 	}
 	
 	void m_destruct_shader_program() {

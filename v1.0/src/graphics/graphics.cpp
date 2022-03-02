@@ -2,11 +2,19 @@
 
 #include "graphics.h"
 
+#include <glew/include/glew.h>
+
+#include <glm/include/glm.hpp>
+#include <glm/include/gtc/matrix_transform.hpp>
+
 #include <iostream>
 
 namespace gp {
 	
 	GLFWwindow* window;
+	
+	int window_width;
+	int window_height;
 	
 	void init() {
 		// make sure we do not re-init
@@ -32,7 +40,7 @@ namespace gp {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		
 		// create the main window
-		window = glfwCreateWindow(1280, 760, "ray-tracing", nullptr, nullptr);
+		window = glfwCreateWindow(window_width = 1280, window_height = 760, "ray-tracing", nullptr, nullptr);
 		if (!window) {
 			std::cerr << "[fatal]: failed to create window" << std::endl;
 			glfwTerminate();

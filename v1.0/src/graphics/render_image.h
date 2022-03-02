@@ -29,8 +29,8 @@ namespace gp {
 		
 		unsigned char* m_texture_buffer;
 		
-		void m_bind_texture();
-		void m_unbind_texture();
+		void m_bind_texture() const;
+		void m_unbind_texture() const;
 		
 		void m_destruct_texture();
 		
@@ -50,15 +50,15 @@ namespace gp {
 		unsigned int m_compile_shader(unsigned int shader_type, const char* shader_source);
 		char* m_read_shader_source(const char* filepath);
 		
-		inline void m_bind_shader() const {
-			glUseProgram(m_shader_program_id);
-		}
+		void m_bind_shader() const;
 		
-		inline void m_unbind_shader() const {
-			glUseProgram(0);
-		}
+		void m_unbind_shader() const;
 		
 		void m_destruct_shader_program();
+		
+	private: // general graphics section
+		
+		unsigned int m_vao, m_vbo, m_ebo;
 		
 	};
 	
