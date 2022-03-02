@@ -30,25 +30,32 @@ public:
 		return m_data[index];
 	}
 	
-	inline A& operator [] (int index) {
+	constexpr A& operator [] (int index) {
 		assert(index >= 0 && index < 3);
 		return m_data[index];
 	}
 	
-	inline          A& x()       { return (*this)[0]; }
+	inline const vec3 <A>& operator = (const vec3 <A>& other) {
+		m_data[0] = other[0];
+		m_data[1] = other[1];
+		m_data[2] = other[2];
+		return *this;
+	}
+	
 	constexpr const A& x() const { return (*this)[0]; }
-	inline          A& r()       { return (*this)[0]; }
+	constexpr          A& x()    { return (*this)[0]; }
 	constexpr const A& r() const { return (*this)[0]; }
+	constexpr          A& r()    { return (*this)[0]; }
 	
-	inline          A& y()       { return (*this)[1]; }
 	constexpr const A& y() const { return (*this)[1]; }
-	inline          A& g()       { return (*this)[1]; }
+	constexpr          A& y()    { return (*this)[1]; }
 	constexpr const A& g() const { return (*this)[1]; }
+	constexpr          A& g()    { return (*this)[1]; }
 	
-	inline          A& z()       { return (*this)[2]; }
 	constexpr const A& z() const { return (*this)[2]; }
-	inline          A& b()       { return (*this)[2]; }
+	constexpr          A& z()    { return (*this)[2]; }
 	constexpr const A& b() const { return (*this)[2]; }
+	constexpr          A& b()    { return (*this)[2]; }
 	
 	constexpr vec3 <A> operator - () const {
 		return vec3 <A> (-m_data[0], -m_data[1], -m_data[2]);
@@ -196,6 +203,15 @@ public:
 		vec3 <A> r_out_perp = etai_over_etat * (uv + cos_theta * n);
 		vec3 <A> r_out_parr = -sqrt(fabs((A) 1 - r_out_perp.length_squared())) * n;
 		return r_out_perp + r_out_parr;
+	}
+	
+	static constexpr vec3 random_in_unit_disk() {
+		while (true) {
+			auto point = vec3(Random::range(-1.0, 1.0), Random::range(-1.0, 1.0), 0);
+			if (point.length_squared() < 1.0) {
+				return point;
+			}
+		}
 	}
 	
 private:

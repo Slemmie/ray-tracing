@@ -75,7 +75,12 @@ int main(int argc, char** argv) {
 	world.push(std::make_shared <Sphere> (vec3(-1.0, 0.0, -1.0), -0.45, material_left));
 	world.push(std::make_shared <Sphere> (vec3( 1.0, 0.0, -1.0), 0.5, material_right));
 	
-	Camera camera(vec3(-2.0, 2.0, 1.0), vec3(0.0, 0.0, -1.0), vec3(0.0, 1.0, 0.0), 90.0, aspect_ratio);
+	vec3 look_from = vec3(3.0, 3.0, 2.0);
+	vec3 look_at = vec3(0.0, 0.0, -1.0);
+	vec3 vup = vec3(0.0, 1.0, 0.0);
+	double dist_to_focus = (look_from - look_at).length();
+	auto aperture = 2.0;
+	Camera camera(look_from, look_at, vup, 20.0, aspect_ratio, aperture, dist_to_focus);
 	
 	//double vp_h = 2.0;
 	//double vp_w = aspect_ratio * vp_h;
