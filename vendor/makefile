@@ -115,3 +115,11 @@ glew_shared:
 glm_reset_submodule:
 	git submodule deinit -f ./glm/
 	git submodule update --init ./glm/
+
+# check for missing bits
+.PHONY: glm_error_check
+glm_error_check:
+	@if [ ! -d "./glm/" ]; then         \
+		echo "! glm submodule missing"; \
+		false;                          \
+	fi;
