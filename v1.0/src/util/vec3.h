@@ -83,11 +83,11 @@ public:
 		return *this;
 	}
 	
-	template <typename B> constexpr friend vec3 <A> operator * (vec3 <A> v, const B& c) {
+	constexpr friend vec3 <A> operator * (vec3 <A> v, const A& c) {
 		return v *= c;
 	}
 	
-	template <typename B> constexpr friend vec3 <A> operator * (const B& c, vec3 <A> v) {
+	constexpr friend vec3 <A> operator * (const A& c, vec3 <A> v) {
 		return v *= c;
 	}
 	
@@ -98,11 +98,11 @@ public:
 		return *this;
 	}
 	
-	template <typename B> constexpr friend vec3 <A> operator / (vec3 <A> v, const B& c) {
+	constexpr friend vec3 <A> operator / (vec3 <A> v, const A& c) {
 		return v /= c;
 	}
 	
-	template <typename B> constexpr friend vec3 <A> operator / (const B& c, vec3 <A> v) {
+	constexpr friend vec3 <A> operator / (const A& c, vec3 <A> v) {
 		return v /= c;
 	}
 	
@@ -113,7 +113,7 @@ public:
 		return *this;
 	}
 	
-	template <typename B> constexpr friend vec3 <A> operator * (vec3 <A> v1, const vec3 <A>& v2) {
+	template <typename B> constexpr friend vec3 <A> operator * (vec3 <A> v1, const vec3 <B>& v2) {
 		return v1 *= v2;
 	}
 	
@@ -124,7 +124,7 @@ public:
 		return *this;
 	}
 	
-	template <typename B> constexpr friend vec3 <A> operator / (vec3 <A> v1, const vec3 <A>& v2) {
+	template <typename B> constexpr friend vec3 <A> operator / (vec3 <A> v1, const vec3 <B>& v2) {
 		return v1 /= v2;
 	}
 	
@@ -180,6 +180,15 @@ public:
 	static inline vec3 <A> random_in_hemisphere(const vec3 <A>& normal) {
 		vec3 <A> in_unit_sphere = random_in_unit_sphere();
 		return dot(in_unit_sphere, normal) > 0.0 ? in_unit_sphere : -in_unit_sphere;
+	}
+	
+	bool near_zero() const {
+		constexpr double bound = 1e-8;
+		return fabs((*this)[0] < bound) && fabs((*this)[1] < bound) && fabs((*this)[2] < bound);
+	}
+	
+	static constexpr vec3 <A> reflect(const vec3 <A>& v, const vec3 <A>& n) {
+		return v - (A) 2 * dot(v, n) * n;
 	}
 	
 private:

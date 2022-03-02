@@ -5,6 +5,10 @@
 #include "util/vec3.h"
 #include "ray.h"
 
+#include <memory>
+
+class Material;
+
 struct Hit_record {
 	
 	vec3d point;
@@ -12,6 +16,8 @@ struct Hit_record {
 	vec3d normal;
 	
 	double t;
+	
+	std::shared_ptr <Material> material;
 	
 	bool front_face;
 	

@@ -10,6 +10,7 @@
 #include "hittable_list.h"
 #include "sphere.h"
 #include "camera.h"
+#include "material.h"
 
 #include <vector>
 #include <algorithm>
@@ -32,8 +33,12 @@ vec3d ray_color(const Rayd& ray, const Hittable& world, int depth) {
 	}
 	Hit_record record;
 	if (world.hit(ray, 0.001, INF, record)) {
-		vec3 target = record.point + record.normal + vec3d::random_in_hemisphere(record.normal);
-		return 0.5 * ray_color(Ray(record.point, target - record.point), world, depth - 1);
+		Ray scattered;
+		vec3d attenuation;
+		if (record.material->scatter(ray, record, attenuation, scattered)) {
+			return attenuation * ray_color(scattered, world, depth - 1);
+		}
+		return vec3(0.0, 0.0, 0.0);
 	}
 	vec3 unit_dir = ray.direction().unit_vector();
 	auto t = 0.5 * (unit_dir.y() + 1.0);
@@ -60,14 +65,19 @@ int main(int argc, char** argv) {
 	int max_depth = 10;
 	
 	Hittable_list world;
-	world.push(std::make_shared <Sphere> (vec3(0.0, 0.0, -1.0), 0.5));
-	world.push(std::make_shared <Sphere> (vec3(0.0, -100.5, -1.0), 100.0));
-	world.push(std::make_shared <Sphere> (vec3(-2.0, 0.75, -2.0), 0.3));
+	auto material_ground = std::make_shared <Lambertian> (vec3(0.8, 0.8, 0.0));
+	auto material_center = std::make_shared <Lambertian> (vec3(0.7, 0.3, 0.3));
+	auto material_left = std::make_shared <Metal> (vec3(0.8, 0.8, 0.8));
+	auto material_right = std::make_shared <Metal> (vec3(0.8, 0.6, 0.2));
+	world.push(std::make_shared <Sphere> (vec3(0.0, -100.5, -1.0), 100.0, material_ground));
+	world.push(std::make_shared <Sphere> (vec3(0.0, 0.0, -1.0), 0.5, material_center));
+	world.push(std::make_shared <Sphere> (vec3(-1.0, 0.0, -1.0), 0.5, material_left));
+	world.push(std::make_shared <Sphere> (vec3(1.0, 0.0, -1.0), 0.5, material_right));
 	
 	Camera camera;
 	
-	double vp_h = 2.0;
-	double vp_w = aspect_ratio * vp_h;
+	//double vp_h = 2.0;
+	//double vp_w = aspect_ratio * vp_h;
 	
 	vec3d scr[im_w * im_h];
 	
