@@ -15,3 +15,4 @@ constexpr double deg_to_rad(double degrees) {
 // as well as the rest of util/...
 
 #include "vec3.h"
+#include "random.h"
