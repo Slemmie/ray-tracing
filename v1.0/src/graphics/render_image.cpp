@@ -1,12 +1,14 @@
 // implements gp::Single_texture_static_renderer
 
-#include "renderer_image.h"
+#include "render_image.h"
+
+#include <glew/include/glew.h>
 
 #include <glm/include/glm.hpp>
 #include <glm/include/gtc/matrix_transform.hpp>
+#include <glm/include/gtc/type_ptr.hpp>
 
 #include <iostream>
-#include <vector>
 
 namespace gp {
 	
@@ -15,7 +17,7 @@ namespace gp {
 		float x, y;
 		float tx, ty;
 		
-		Vertex(float _x, float _y, float _ty, float _ty) :
+		Vertex(float _x, float _y, float _tx, float _ty) :
 		x(_x), y(_y), tx(_tx), ty(_ty)
 		{ }
 		
@@ -28,15 +30,15 @@ namespace gp {
 	m_texture_id(0),
 	m_texture_width(0),
 	m_texture_height(0),
-	m_texture_buffer(nullptr),
 	m_shader_program_id(0),
 	m_shader_source_count(2),
-	m_shader_sources({ "./glsl/STST_vertex.glsl", "glsl/STST_fragment.glsl" }),
-	m_shader_source_types({ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER }),
 	m_vao(0),
 	m_vbo(0),
 	m_ebo(0)
 	{
+		m_shader_sources = { "./src/graphics/glsl/STST_vertex.glsl", "./src/graphics/glsl/STST_fragment.glsl" };
+		m_shader_source_types = { GL_VERTEX_SHADER, GL_FRAGMENT_SHADER };
+		
 		m_create_shader_program();
 		
 		std::vector <Vertex> vertices = {
@@ -91,7 +93,23 @@ namespace gp {
 		-float(window_width) / 2.0f, float(window_width) / 2.0f,
 		-float(window_height) / 2.0f, float(window_height) / 2.0f,
 		-1.0f, 1.0f);
-		m_shader->set_uniform_mat4("u_proj", proj);
+		glUniformMatrix4fv(m_get_shader_uniform_location("u_proj"), 1, GL_FALSE, glm::value_ptr(proj));
+		
+		// handle texture scaling
+		// always preserve texture aspect ratio
+		float win_asp = (float) window_width / (float) window_height;
+		float tex_asp = (float) m_texture_width / (float) m_texture_height;
+		glm::mat4 model(1.0f);
+		if (win_asp > tex_asp) {
+			// snap to height
+			model = glm::scale(model,
+			glm::vec3(tex_asp * float(window_height) / 2.0f, float(window_height) / 2.0f, 1.0f));
+		} else {
+			// snap to width
+			model = glm::scale(model,
+			glm::vec3(float(window_width) / 2.0f,  float(window_width) / 2.0f / tex_asp, 1.0f));
+		}
+		glUniformMatrix4fv(m_get_shader_uniform_location("u_model"), 1, GL_FALSE, glm::value_ptr(model));
 		
 		glDrawElements(GL_TRIANGLES, 2 * 3, GL_UNSIGNED_INT, (void*) 0);
 		
@@ -104,18 +122,19 @@ namespace gp {
 	const unsigned char* texture_buffer, int texture_width, int texture_height) {
 		m_texture_width = texture_width;
 		m_texture_height = texture_height;
-		m_texture_buffer = texture_buffer;
+		m_texture_buffer = std::vector <unsigned char>
+		(&texture_buffer[0], &texture_buffer[texture_width * texture_height * 4]);
 		
 		glGenTextures(1, &m_texture_id);
 		glBindTexture(GL_TEXTURE_2D, m_texture_id);
 		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		
-		glTexImage2D(GL_TEXTURE_2D, GL_RGBA8, texture_width, texture_height,
-		0, GL_RGBA, GL_UNSIGNED_BYTE, m_texture_buffer);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture_width, texture_height,
+		0, GL_RGBA, GL_UNSIGNED_BYTE, m_texture_buffer.data());
 		
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
@@ -146,7 +165,7 @@ namespace gp {
 		}
 		
 		for (size_t i = 0; i < m_shader_source_count; i++) {
-			char* source = m_read_shader_source(m_shader_sources[i]);
+			char* source = m_read_shader_source(m_shader_sources[i].c_str());
 			ids[i] = m_compile_shader(m_shader_source_types[i], source);
 			free(source);
 		}
@@ -171,13 +190,14 @@ namespace gp {
 		if (it != m_shader_uniform_location_map.end()) {
 			return it->second;
 		}
-		return m_shader_uniform_location_map[name] = glGetUniformLocation(m_shader_program_id, uniform_name);
+		return m_shader_uniform_location_map[uniform_name] =
+		glGetUniformLocation(m_shader_program_id, uniform_name);
 	}
 	
 	unsigned int Single_texture_static_renderer::m_compile_shader(
 	unsigned int shader_type, const char* shader_source) {
 		auto get_shader_type = [] (unsigned int type) -> std::string {
-			switch (shader_type) {
+			switch (type) {
 				case GL_VERTEX_SHADER          : return "vertex";
 				case GL_TESS_CONTROL_SHADER    : return "tessellation control";
 				case GL_TESS_EVALUATION_SHADER : return "tessellation evaluation";
@@ -192,7 +212,7 @@ namespace gp {
 		unsigned int id = glCreateShader(shader_type);
 		glShaderSource(id, 1, &shader_source, nullptr);
 		
-		glCompile_shader(id);
+		glCompileShader(id);
 		
 		int compilation_result;
 		glGetShaderiv(id, GL_COMPILE_STATUS, &compilation_result);
@@ -254,15 +274,15 @@ namespace gp {
 		return buffer;
 	}
 	
-	void m_bind_shader() const {
+	void Single_texture_static_renderer::m_bind_shader() const {
 		glUseProgram(m_shader_program_id);
 	}
 	
-	void m_unbind_shader() const {
+	void Single_texture_static_renderer::m_unbind_shader() const {
 		glUseProgram(0);
 	}
 	
-	void m_destruct_shader_program() {
+	void Single_texture_static_renderer::m_destruct_shader_program() {
 		if (m_shader_program_id) {
 			glDeleteProgram(m_shader_program_id);
 		}

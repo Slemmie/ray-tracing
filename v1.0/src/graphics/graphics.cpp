@@ -2,8 +2,6 @@
 
 #include "graphics.h"
 
-#include <glew/include/glew.h>
-
 #include <iostream>
 
 namespace gp {
@@ -61,6 +59,14 @@ namespace gp {
 		
 		// enable vsync by default
 		glfwSwapInterval(1);
+		
+		// glfw callbacks
+		glfwSetFramebufferSizeCallback(window, []
+		(GLFWwindow* win, int width, int height) -> void {
+			glViewport(0, 0, width, height);
+			window_width = width;
+			window_height = height;
+		});
 	}
 	
 	void terminate() {

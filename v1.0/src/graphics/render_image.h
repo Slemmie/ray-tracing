@@ -5,6 +5,7 @@
 
 #include <unordered_map>
 #include <string>
+#include <vector>
 
 namespace gp {
 	
@@ -27,7 +28,7 @@ namespace gp {
 		int m_texture_width;
 		int m_texture_height;
 		
-		unsigned char* m_texture_buffer;
+		std::vector <unsigned char> m_texture_buffer;
 		
 		void m_bind_texture() const;
 		void m_unbind_texture() const;
@@ -41,8 +42,8 @@ namespace gp {
 		std::unordered_map <std::string, int> m_shader_uniform_location_map;
 		
 		const size_t m_shader_source_count;
-		const char** m_shader_sources;
-		const unsigned int* m_shader_source_types;
+		std::vector <std::string> m_shader_sources;
+		std::vector <unsigned int> m_shader_source_types;
 		
 		void m_create_shader_program();
 		
