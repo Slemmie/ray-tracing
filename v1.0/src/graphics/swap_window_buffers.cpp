@@ -36,7 +36,6 @@ namespace gp {
 			// ~166 fps frame
 			if (diff_micros < timestamp(6'000)) {
 				v_sync_working = false;
-				std::cerr << diff_micros << std::endl;
 				std::cerr << "[warning]: vsync is not working; enabling backup delay" << std::endl;
 			}
 		}
