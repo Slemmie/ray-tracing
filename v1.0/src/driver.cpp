@@ -23,10 +23,15 @@ namespace gp {
 	
 } /// namespace gp
 
-vec3d ray_color(const Rayd& ray, const Hittable& world) {
+vec3d ray_color(const Rayd& ray, const Hittable& world, int depth) {
+	if (depth <= 0) {
+		return vec3(0.0, 0.0, 0.0);
+	}
 	Hit_record record;
-	if (world.hit(ray, 0.0, INF, record)) {
-		return 0.5 * (record.normal + vec3(1.0, 1.0, 1.0));
+	if (world.hit(ray, 0.001, INF, record)) {
+		vec3 target = record.point + record.normal + vec3d::random_in_unit_sphere();
+		return 0.5 * ray_color(Ray(record.point, target - record.point), world, depth - 1);
+		//return 0.5 * (record.normal + vec3(1.0, 1.0, 1.0));
 	}
 	vec3 unit_dir = ray.direction().unit_vector();
 	auto t = 0.5 * (unit_dir.y() + 1.0);
@@ -43,9 +48,10 @@ int main() {
 	//int height = gp::window_height;
 	
 	double aspect_ratio = (double) gp::window_width / (double) gp::window_height;
-	int im_w = gp::window_width / 2;
+	int im_w = gp::window_width / 5;
 	int im_h = static_cast <int> ((double) im_w / aspect_ratio);
 	int samples_per_pixel = 100;
+	int max_depth = 10;
 	
 	Hittable_list world;
 	world.push(std::make_shared <Sphere> (vec3(0.0, 0.0, -1.0), 0.5));
@@ -66,9 +72,12 @@ int main() {
 				auto u = (i + Random::real()) / (im_w - 1);
 				auto v = (j + Random::real()) / (im_h - 1);
 				Ray ray = camera.get_ray(u, v);
-				color += ray_color(ray, world);
+				color += ray_color(ray, world, max_depth);
 			}
-			color /= (double) samples_per_pixel;
+			double scale = 1.0 / (double) samples_per_pixel;
+			color.r() = sqrt(scale * color.r());
+			color.g() = sqrt(scale * color.g());
+			color.b() = sqrt(scale * color.b());
 			color.r() = clamp(color.r(), 0.0, 0.999);
 			color.g() = clamp(color.g(), 0.0, 0.999);
 			color.b() = clamp(color.b(), 0.0, 0.999);

@@ -161,7 +161,7 @@ public:
 	}
 	
 	static inline vec3 <A> random(A min, A max) {
-		return vec3 <A>(Random::real(min, max), Random::real(min, max), Random::real(min, max));
+		return vec3 <A>(Random::range(min, max), Random::range(min, max), Random::range(min, max));
 	}
 	
 	static inline vec3 <A> random_in_unit_sphere() {
