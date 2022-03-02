@@ -5,10 +5,14 @@
 
 #include "../util/vec3.h"
 
+#include <glew/include/glew.h>
+
 #include <unordered_map>
 #include <string>
 #include <vector>
 #include <cassert>
+#include <atomic>
+#include <mutex>
 
 namespace gp {
 	
@@ -39,7 +43,42 @@ namespace gp {
 			delete(buffer);
 		}
 		
+		// change a pixel in the previously bound texture buffer
+		// the procedure is buffered
+		// as long as update_pixel() is not called on the same pixel at the same time;
+		// this is multithread safe
+		template <typename A> inline void update_pixel(const vec3 <A>& v, int x, int y) {
+			int index = (y * m_texture_width + x) * 4;
+			m_texture_buffer[index + 0] = v.r();
+			m_texture_buffer[index + 1] = v.g();
+			m_texture_buffer[index + 2] = v.b();
+			m_texture_buffer[index + 3] = 255;
+			
+			m_texture_flush_limit_counter++;
+			
+			if (m_texture_flush_limit_counter > m_texture_flush_limit) {
+				std::lock_guard <std::mutex> lock(m_texture_flush_mutex);
+				// check again
+				// if two threads both pass the first if statement and both try to lock,
+				// the one waiting on the first should not also write to the GPU when it gets through
+				if (m_texture_flush_limit_counter > m_texture_flush_limit) {
+					m_texture_flush_limit_counter = 0;
+					m_bind_texture();
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_texture_width, m_texture_height,
+					0, GL_RGBA, GL_UNSIGNED_BYTE, m_texture_buffer.data());
+					m_unbind_texture();
+				}
+			}
+		}
+		
 	private: // texture section
+		
+		// rewrite the texture when update_pixel has been called this many times
+		int m_texture_flush_limit;
+		// the counter
+		std::atomic <int> m_texture_flush_limit_counter;
+		// mutex for the above described purpose
+		std::mutex m_texture_flush_mutex;
 		
 		unsigned int m_texture_id;
 		int m_texture_width;

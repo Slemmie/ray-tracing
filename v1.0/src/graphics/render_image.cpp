@@ -2,8 +2,6 @@
 
 #include "render_image.h"
 
-#include <glew/include/glew.h>
-
 #include <glm/include/glm.hpp>
 #include <glm/include/gtc/matrix_transform.hpp>
 #include <glm/include/gtc/type_ptr.hpp>
@@ -27,6 +25,7 @@ namespace gp {
 	extern int window_height;
 	
 	Single_texture_static_renderer::Single_texture_static_renderer() :
+	m_texture_flush_limit(1024),
 	m_texture_id(0),
 	m_texture_width(0),
 	m_texture_height(0),
