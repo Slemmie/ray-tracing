@@ -8,6 +8,9 @@ namespace gp {
 	
 	extern GLFWwindow* window;
 	
+	extern int window_width;
+	extern int window_height;
+	
 } /// namespace gp
 
 int main() {
@@ -16,11 +19,25 @@ int main() {
 	
 	gp::Single_texture_static_renderer* stst = new gp::Single_texture_static_renderer;
 	
-	unsigned char c[6 * 4] = {
-		255, 255, 255, 255,  255, 255, 128, 255,  0, 0, 255, 255,
-		128, 255, 255, 255,  255, 128, 128, 255,  0, 255, 255, 255
-	};
-	stst->update_texture(c, 3, 2);
+	int width = gp::window_width;
+	int height = gp::window_height;
+	
+	unsigned char scr[width * height * 4];
+	
+	for (int i = height - 1; i >= 0; i--) {
+		for (int j = 0; j < width; j++) {
+			double r = double(j) / (width - 1);
+			double g = double(i) / (height - 1);
+			double b = 0.45;
+			
+			scr[((i) * width + j) * 4 + 0] = (int) (255.999 * r);
+			scr[((i) * width + j) * 4 + 1] = (int) (255.999 * g);
+			scr[((i) * width + j) * 4 + 2] = (int) (255.999 * b);
+			scr[((i) * width + j) * 4 + 3] = 255;
+		}
+	}
+	
+	stst->update_texture(scr, width, height);
 	
 	while (!glfwWindowShouldClose(gp::window)) {
 		glClear(GL_COLOR_BUFFER_BIT);
