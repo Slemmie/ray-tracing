@@ -42,11 +42,15 @@ namespace gp {
 		
 		const size_t m_shader_source_count;
 		const char** m_shader_sources;
+		const unsigned int* m_shader_source_types;
 		
-		void m_create_shader();
+		void m_create_shader_program();
+		
 		int m_get_shader_uniform_location(const char* uniform_name);
 		unsigned int m_compile_shader(unsigned int shader_type, const char* shader_source);
 		char* m_read_shader_source(const char* filepath);
+		
+		void m_destruct_shader_program();
 		
 	};
 	
