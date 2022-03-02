@@ -4,9 +4,6 @@
 
 #include <glew/include/glew.h>
 
-#include <glm/include/glm.hpp>
-#include <glm/include/gtc/matrix_transform.hpp>
-
 #include <iostream>
 
 namespace gp {
