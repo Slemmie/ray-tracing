@@ -34,8 +34,9 @@ namespace gp {
 		if (v_sync_working) {
 			timestamp diff_micros = static_cast <timestamp> ((glfwGetTime() - prev_seconds) * 1e6);
 			// ~166 fps frame
-			if (diff_micros < timestamp(100'000)) {
+			if (diff_micros < timestamp(6'000)) {
 				v_sync_working = false;
+				std::cerr << diff_micros << std::endl;
 				std::cerr << "[warning]: vsync is not working; enabling backup delay" << std::endl;
 			}
 		}
@@ -47,10 +48,12 @@ namespace gp {
 			// use 60 fps target at the moment
 			timestamp diff_micros = static_cast <timestamp> ((glfwGetTime() - prev_seconds) * 1e6);
 			timestamp sleep_micros = static_cast <timestamp> (std::max(0LL,
-			(long long)std::round(cnst + 1e6 / 60.0)) - (long long) diff_micros);
+			(long long) std::round(cnst + 1e6 / 60.0)) - (long long) diff_micros);
 			
 			std::this_thread::sleep_for(std::chrono::microseconds(sleep_micros));
 		}
+		
+		prev_seconds = glfwGetTime();
 	}
 	
 } /// namespace gp
