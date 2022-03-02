@@ -15,10 +15,12 @@ class Camera {
 	
 public:
 	
-	Camera() {
-		double aspect_ratio = (double) gp::window_width / (double) gp::window_height;
-		double vp_h = 2.0;
-		double vp_w = aspect_ratio * vp_h;
+	Camera(double _vertical_fov, double _aspect_ratio) {
+		auto theta = deg_to_rad(_vertical_fov);
+		double h = tan(theta / 2.0);
+		double vp_h = 2.0 * h;
+		double vp_w = _aspect_ratio * vp_h;
+		
 		double focal_length = 1.0;
 		
 		m_origin = vec3(0.0, 0.0, 0.0);

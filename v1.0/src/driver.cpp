@@ -65,17 +65,12 @@ int main(int argc, char** argv) {
 	int max_depth = 10;
 	
 	Hittable_list world;
-	auto material_ground = std::make_shared <Lambertian> (vec3(0.8, 0.8, 0.0));
-	auto material_center = std::make_shared <Lambertian> (vec3(0.1, 0.2, 0.5));
-	auto material_left = std::make_shared <Dielectric> (1.5);
-	auto material_right = std::make_shared <Metal> (vec3(0.8, 0.6, 0.2), 0.0);
-	world.push(std::make_shared <Sphere> (vec3(0.0, -100.5, -1.0), 100.0, material_ground));
-	world.push(std::make_shared <Sphere> (vec3(0.0, 0.0, -1.0), 0.5, material_center));
-	world.push(std::make_shared <Sphere> (vec3(-1.0, 0.0, -1.0), 0.5, material_left));
-	world.push(std::make_shared <Sphere> (vec3(-1.0, 0.0, -1.0), -0.4, material_left));
-	world.push(std::make_shared <Sphere> (vec3(1.0, 0.0, -1.0), 0.5, material_right));
+	auto material_left = std::make_shared <Lambertian> (vec3(0.0, 0.0, 1.0));
+	auto material_right = std::make_shared <Lambertian> (vec3(1.0, 0.0 , 0.0));
+	world.push(std::make_shared <Sphere> (vec3(-cos(PI / 4), 0.0, -1.0), cos(PI / 4.0), material_left));
+	world.push(std::make_shared <Sphere> (vec3(cos(PI / 4), 0.0, -1.0), cos(PI / 4.0), material_right));
 	
-	Camera camera;
+	Camera camera(90.0, aspect_ratio);
 	
 	//double vp_h = 2.0;
 	//double vp_w = aspect_ratio * vp_h;
