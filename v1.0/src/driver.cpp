@@ -24,7 +24,22 @@ int main() {
 	int width = gp::window_width;
 	int height = gp::window_height;
 	
-	unsigned char scr[width * height * 4];
+	//unsigned char scr[width * height * 4];
+	
+	//for (int i = height - 1; i >= 0; i--) {
+		//for (int j = 0; j < width; j++) {
+			//double r = double(j) / (width - 1);
+			//double g = double(i) / (height - 1);
+			//double b = 0.45;
+			
+			//scr[((i) * width + j) * 4 + 0] = (int) (255.999 * r);
+			//scr[((i) * width + j) * 4 + 1] = (int) (255.999 * g);
+			//scr[((i) * width + j) * 4 + 2] = (int) (255.999 * b);
+			//scr[((i) * width + j) * 4 + 3] = 255;
+		//}
+	//}
+	
+	vec3d scr[width * height];
 	
 	for (int i = height - 1; i >= 0; i--) {
 		for (int j = 0; j < width; j++) {
@@ -32,10 +47,7 @@ int main() {
 			double g = double(i) / (height - 1);
 			double b = 0.45;
 			
-			scr[((i) * width + j) * 4 + 0] = (int) (255.999 * r);
-			scr[((i) * width + j) * 4 + 1] = (int) (255.999 * g);
-			scr[((i) * width + j) * 4 + 2] = (int) (255.999 * b);
-			scr[((i) * width + j) * 4 + 3] = 255;
+			scr[i * width + j] = vec3(255.999 * r, 255.999 * g, 255.999 * b);
 		}
 	}
 	

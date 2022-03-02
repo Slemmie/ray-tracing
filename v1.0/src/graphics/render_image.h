@@ -3,9 +3,12 @@
 
 #pragma once
 
+#include "../util/vec3.h"
+
 #include <unordered_map>
 #include <string>
 #include <vector>
+#include <cassert>
 
 namespace gp {
 	
@@ -21,6 +24,20 @@ namespace gp {
 		void on_update();
 		
 		void update_texture(const unsigned char* texture_buffer, int texture_width, int texture_height);
+		
+		template <typename A> inline void update_texture(const vec3 <A>* texture_buffer,
+		int texture_width, int texture_height) {
+			unsigned char* buffer = new unsigned char[texture_width * texture_height * 4];
+			assert(buffer);
+			for (int i = 0; i < texture_width * texture_height * 4; i += 4) {
+				buffer[i + 0] = texture_buffer[i / 4].r();
+				buffer[i + 1] = texture_buffer[i / 4].g();
+				buffer[i + 2] = texture_buffer[i / 4].b();
+				buffer[i + 3] = 255;
+			}
+			update_texture(buffer, texture_width, texture_height);
+			delete(buffer);
+		}
 		
 	private: // texture section
 		
