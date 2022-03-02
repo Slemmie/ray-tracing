@@ -177,6 +177,11 @@ public:
 		return random_in_unit_sphere().normalize();
 	}
 	
+	static inline vec3 <A> random_in_hemisphere(const vec3 <A>& normal) {
+		vec3 <A> in_unit_sphere = random_in_unit_sphere();
+		return dot(in_unit_sphere, normal) > 0.0 ? in_unit_sphere : -in_unit_sphere;
+	}
+	
 private:
 	
 	A m_data[3];
