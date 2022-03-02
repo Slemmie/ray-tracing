@@ -11,12 +11,14 @@ all: release
 # all cpp source files
 SOURCE_FILES =                   \
 $(wildcard ./src/*.cpp)          \
-$(wildcard ./src/graphics/*.cpp)
+$(wildcard ./src/graphics/*.cpp) \
+$(wildcard ./src/util/*.cpp)
 
 # all header files
 HEADER_FILES =                 \
 $(wildcard ./src/*.h)          \
-$(wildcard ./src/graphics/*.h)
+$(wildcard ./src/graphics/*.h) \
+$(wildcard ./src/util/*.h)
 
 # all object files
 OBJECT_FILES = ${SOURCE_FILES:.cpp=.o}

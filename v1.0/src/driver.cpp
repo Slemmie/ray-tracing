@@ -4,6 +4,8 @@
 #include "graphics/graphics.h"
 #include "graphics/render_image.h"
 
+#include "util/vec3.h"
+
 namespace gp {
 	
 	extern GLFWwindow* window;
