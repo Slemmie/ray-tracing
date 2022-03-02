@@ -85,6 +85,10 @@ public:
 		return v *= c;
 	}
 	
+	template <typename B> constexpr friend vec3 <A> operator * (const B& c, vec3 <A> v) {
+		return v *= c;
+	}
+	
 	template <typename B> inline vec3 <A>& operator /= (const B& c) {
 		(*this)[0] /= c;
 		(*this)[1] /= c;
@@ -94,6 +98,52 @@ public:
 	
 	template <typename B> constexpr friend vec3 <A> operator / (vec3 <A> v, const B& c) {
 		return v /= c;
+	}
+	
+	template <typename B> constexpr friend vec3 <A> operator / (const B& c, vec3 <A> v) {
+		return v /= c;
+	}
+	
+	template <typename B> inline vec3 <A>& operator *= (const vec3 <B>& v) {
+		(*this)[0] *= v[0];
+		(*this)[1] *= v[1];
+		(*this)[2] *= v[2];
+		return *this;
+	}
+	
+	template <typename B> constexpr friend vec3 <A> operator * (vec3 <A> v1, const vec3 <A>& v2) {
+		return v1 *= v2;
+	}
+	
+	template <typename B> inline vec3 <A>& operator /= (const vec3 <B>& v) {
+		(*this)[0] /= v[0];
+		(*this)[1] /= v[1];
+		(*this)[2] /= v[2];
+		return *this;
+	}
+	
+	template <typename B> constexpr friend vec3 <A> operator / (vec3 <A> v1, const vec3 <A>& v2) {
+		return v1 /= v2;
+	}
+	
+	template <typename B> constexpr friend A dot(const vec3 <A>& v1, const vec3 <B>& v2) {
+		return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
+	}
+	
+	template <typename B> constexpr friend vec3 <A> cross(const vec3 <A>& v1, const vec3 <B>& v2) {
+		return vec3(
+		v1[1] * v2[2] - v1[2] * v2[1],
+		v1[2] * v2[0] - v1[0] * v2[2],
+		v1[0] * v2[1] - v1[1] * v2[0]);
+	}
+	
+	inline vec3& normalize() {
+		(*this) /= length();
+		return *this;
+	}
+	
+	constexpr vec3 unit_vector() const {
+		return (*this) / length();
 	}
 	
 	constexpr A length_squared() const {
