@@ -33,7 +33,7 @@ VENDOR_PATH = $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))/../vend
 LINKS = \
 -L $(VENDOR_PATH)glfw/shared/ -Wl,-rpath=$(VENDOR_PATH)glfw/shared/ $(VENDOR_PATH)glfw/shared/libglfw.so.3   \
 -L $(VENDOR_PATH)glew/shared/ -Wl,-rpath=$(VENDOR_PATH)glew/shared/ $(VENDOR_PATH)glew/shared/libGLEW.so.2.2 \
--lGL
+-lGL -lpthread
 
 # main release target
 release: ${OBJECT_FILES}

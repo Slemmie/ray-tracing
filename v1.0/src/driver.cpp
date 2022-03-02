@@ -13,6 +13,8 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <atomic>
+#include <thread>
 
 namespace gp {
 	
@@ -37,7 +39,11 @@ vec3d ray_color(const Rayd& ray, const Hittable& world, int depth) {
 	return (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
 }
 
-int main() {
+int main(int argc, char** argv) {
+	
+	assert(argc >= 2);
+	
+	int num_threads = std::stoi(argv[1]);
 	
 	gp::init();
 	
@@ -47,7 +53,7 @@ int main() {
 	//int height = gp::window_height;
 	
 	double aspect_ratio = (double) gp::window_width / (double) gp::window_height;
-	int im_w = gp::window_width / 5;
+	int im_w = gp::window_width / 1;
 	int im_h = static_cast <int> ((double) im_w / aspect_ratio);
 	int samples_per_pixel = 100;
 	int max_depth = 10;
@@ -64,8 +70,31 @@ int main() {
 	
 	vec3d scr[im_w * im_h];
 	
+	// set the base color and dimensions before launching any threads
 	for (int j = im_h - 1; j >= 0; j--) {
 		for (int i = 0; i < im_w; i++) {
+			scr[j * im_w + i] = vec3(5.0, 5.0, 5.0);
+		}
+	}
+	
+	stst->update_texture(scr, im_w, im_h);
+	
+	// multithreaded access to global index counter
+	std::atomic <int> current_index = 0;
+	std::atomic <bool> terminate_threads = false;
+	
+	// a calculating thread runs this
+	auto inl_job = [&] () -> void {
+		// run until all pixels are filled
+		while (current_index < im_h * im_w && !terminate_threads) {
+			int index = current_index++;
+			if (index >= im_h * im_w) {
+				break;
+			}
+			
+			int j = index / im_w;
+			int i = index % im_w;
+			
 			vec3 color = vec3(0.0, 0.0, 0.0);
 			for (int k = 0; k < samples_per_pixel; k++) {
 				auto u = (i + Random::real()) / (im_w - 1);
@@ -80,13 +109,42 @@ int main() {
 			color.r() = clamp(color.r(), 0.0, 0.999);
 			color.g() = clamp(color.g(), 0.0, 0.999);
 			color.b() = clamp(color.b(), 0.0, 0.999);
-			scr[j * im_w + i] = color * 256.0;
+			
+			stst->update_pixel(color * 256.0, i, j);
 		}
+	};
+	
+	// launch threads
+	std::vector <std::thread> threads;
+	for (int i = 0; i < num_threads; i++) {
+		threads.emplace_back(std::thread(inl_job));
 	}
 	
-	std::cerr << "DONE" << std::endl;
+	// single threaded way...
 	
-	stst->update_texture(scr, im_w, im_h);
+	//for (int j = im_h - 1; j >= 0; j--) {
+		//for (int i = 0; i < im_w; i++) {
+			//vec3 color = vec3(0.0, 0.0, 0.0);
+			//for (int k = 0; k < samples_per_pixel; k++) {
+				//auto u = (i + Random::real()) / (im_w - 1);
+				//auto v = (j + Random::real()) / (im_h - 1);
+				//Ray ray = camera.get_ray(u, v);
+				//color += ray_color(ray, world, max_depth);
+			//}
+			//double scale = 1.0 / (double) samples_per_pixel;
+			//color.r() = sqrt(scale * color.r());
+			//color.g() = sqrt(scale * color.g());
+			//color.b() = sqrt(scale * color.b());
+			//color.r() = clamp(color.r(), 0.0, 0.999);
+			//color.g() = clamp(color.g(), 0.0, 0.999);
+			//color.b() = clamp(color.b(), 0.0, 0.999);
+			//scr[j * im_w + i] = color * 256.0;
+		//}
+	//}
+	
+	//std::cerr << "DONE" << std::endl;
+	
+	//stst->update_texture(scr, im_w, im_h);
 	
 	while (!glfwWindowShouldClose(gp::window)) {
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -96,6 +154,12 @@ int main() {
 		glfwSwapBuffers(gp::window);
 		
 		glfwPollEvents();
+	}
+	
+	// make sure threads are joined
+	for (std::thread& thread : threads) {
+		terminate_threads = true;
+		thread.join();
 	}
 	
 	delete(stst);

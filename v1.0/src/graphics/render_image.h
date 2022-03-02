@@ -40,7 +40,7 @@ namespace gp {
 				buffer[i + 3] = 255;
 			}
 			update_texture(buffer, texture_width, texture_height);
-			delete(buffer);
+			delete [] (buffer);
 		}
 		
 		// change a pixel in the previously bound texture buffer
@@ -56,19 +56,7 @@ namespace gp {
 			
 			m_texture_flush_limit_counter++;
 			
-			if (m_texture_flush_limit_counter > m_texture_flush_limit) {
-				std::lock_guard <std::mutex> lock(m_texture_flush_mutex);
-				// check again
-				// if two threads both pass the first if statement and both try to lock,
-				// the one waiting on the first should not also write to the GPU when it gets through
-				if (m_texture_flush_limit_counter > m_texture_flush_limit) {
-					m_texture_flush_limit_counter = 0;
-					m_bind_texture();
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_texture_width, m_texture_height,
-					0, GL_RGBA, GL_UNSIGNED_BYTE, m_texture_buffer.data());
-					m_unbind_texture();
-				}
-			}
+			// the main rendering thread checks each frame if it should flush the buffer
 		}
 		
 	private: // texture section

@@ -84,6 +84,16 @@ namespace gp {
 	}
 	
 	void Single_texture_static_renderer::on_update() {
+		// check if updating the texture is requested since previous frame
+		if (m_texture_flush_limit_counter > m_texture_flush_limit) {
+			std::lock_guard <std::mutex> lock(m_texture_flush_mutex);
+			m_texture_flush_limit_counter = 0;
+			m_bind_texture();
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_texture_width, m_texture_height,
+			0, GL_RGBA, GL_UNSIGNED_BYTE, m_texture_buffer.data());
+			m_unbind_texture();
+		}
+		
 		m_bind_shader();
 		m_bind_texture();
 		glBindVertexArray(m_vao);
