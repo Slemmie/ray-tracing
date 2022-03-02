@@ -48,14 +48,15 @@ class Metal : public Material {
 	
 public:
 	
-	Metal(const vec3d& _albedo) :
-	m_albedo(_albedo)
+	Metal(const vec3d& _albedo, double _fuzz) :
+	m_albedo(_albedo),
+	m_fuzz(_fuzz < 1 ? _fuzz : 1)
 	{ }
 	
 	virtual bool scatter(const Rayd& ray, const Hit_record& hit_record,
 	vec3d& attenuation, Rayd& scattered) const override {
 		vec3 reflected = vec3d::reflect((ray.direction()).unit_vector(), hit_record.normal);
-		scattered = Ray(hit_record.point, reflected);
+		scattered = Ray(hit_record.point, reflected + m_fuzz * vec3d::random_in_unit_sphere());
 		attenuation = m_albedo;
 		return dot(scattered.direction(), hit_record.normal) > 0.0;
 	}
@@ -63,5 +64,7 @@ public:
 private:
 	
 	vec3d m_albedo;
+	
+	double m_fuzz;
 	
 };

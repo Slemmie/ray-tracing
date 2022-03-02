@@ -67,8 +67,8 @@ int main(int argc, char** argv) {
 	Hittable_list world;
 	auto material_ground = std::make_shared <Lambertian> (vec3(0.8, 0.8, 0.0));
 	auto material_center = std::make_shared <Lambertian> (vec3(0.7, 0.3, 0.3));
-	auto material_left = std::make_shared <Metal> (vec3(0.8, 0.8, 0.8));
-	auto material_right = std::make_shared <Metal> (vec3(0.8, 0.6, 0.2));
+	auto material_left = std::make_shared <Metal> (vec3(0.8, 0.8, 0.8), 0.3);
+	auto material_right = std::make_shared <Metal> (vec3(0.8, 0.6, 0.2), 1.0);
 	world.push(std::make_shared <Sphere> (vec3(0.0, -100.5, -1.0), 100.0, material_ground));
 	world.push(std::make_shared <Sphere> (vec3(0.0, 0.0, -1.0), 0.5, material_center));
 	world.push(std::make_shared <Sphere> (vec3(-1.0, 0.0, -1.0), 0.5, material_left));
