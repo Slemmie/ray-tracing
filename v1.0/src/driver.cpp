@@ -3,6 +3,7 @@
 
 #include "graphics/graphics.h"
 #include "graphics/render_image.h"
+#include "graphics/swap_window_buffers.h"
 
 #include "util/util.h"
 #include "ray.h"
@@ -151,7 +152,7 @@ int main(int argc, char** argv) {
 		
 		stst->on_update();
 		
-		glfwSwapBuffers(gp::window);
+		gp::swap_window_buffers();
 		
 		glfwPollEvents();
 	}
