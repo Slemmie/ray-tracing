@@ -123,3 +123,19 @@ glm_error_check:
 		echo "! glm submodule missing"; \
 		false;                          \
 	fi;
+
+# export headers
+.PHONY: glm_headers
+glm_headers:
+	# prepare
+	make glm_error_check
+	make glm_reset_submodule
+	if [ ! -d "./bin/glm/include/" ]; then mkdir -p ./bin/glm/include/; fi;
+	
+	# export
+	cp -r ./glm/glm/* ./bin/glm/include/
+	
+	# reset submodule
+	make glm_reset_submodule
+	
+	@echo "OK"
