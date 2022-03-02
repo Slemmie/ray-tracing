@@ -29,7 +29,7 @@ vec3d ray_color(const Rayd& ray, const Hittable& world, int depth) {
 	}
 	Hit_record record;
 	if (world.hit(ray, 0.001, INF, record)) {
-		vec3 target = record.point + record.normal + vec3d::random_in_unit_sphere();
+		vec3 target = record.point + record.normal + vec3d::random_unit_vec3();
 		return 0.5 * ray_color(Ray(record.point, target - record.point), world, depth - 1);
 		//return 0.5 * (record.normal + vec3(1.0, 1.0, 1.0));
 	}

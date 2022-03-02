@@ -173,6 +173,10 @@ public:
 		}
 	}
 	
+	static inline vec3 <A> random_unit_vec3() {
+		return random_in_unit_sphere().normalize();
+	}
+	
 private:
 	
 	A m_data[3];
