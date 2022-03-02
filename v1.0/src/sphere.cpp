@@ -6,7 +6,7 @@ bool Sphere::hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_re
 	vec3 oc = ray.origin() - m_center;
 	auto a = ray.direction().length_squared();
 	auto h_b = dot(oc, ray.direction());
-	auto c = oc.length_squared() - m_radius - m_radius;
+	auto c = oc.length_squared() - m_radius * m_radius;
 	
 	auto discr = h_b * h_b - a * c;
 	if (discr < 0.0) {
