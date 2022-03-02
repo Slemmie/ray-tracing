@@ -7,6 +7,7 @@
 #include <thread>
 #include <chrono>
 #include <cmath>
+#include <iostream>
 
 namespace gp {
 	
@@ -35,6 +36,7 @@ namespace gp {
 			// ~166 fps frame
 			if (diff_micros < timestamp(100'000)) {
 				v_sync_working = false;
+				std::cerr << "[warning]: vsync is not working; enabling backup delay" << std::endl;
 			}
 		}
 		
