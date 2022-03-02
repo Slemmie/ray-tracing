@@ -182,6 +182,8 @@ namespace gp {
 			glDeleteShader(ids[i]);
 		}
 		
+		free(ids);
+		
 		m_shader_program_id = program;
 	}
 	
