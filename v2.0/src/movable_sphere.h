@@ -6,6 +6,8 @@
 #include "ray.h"
 #include "hittable.h"
 
+#include <memory>
+
 class Material;
 
 class AABB;
