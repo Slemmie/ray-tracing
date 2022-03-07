@@ -9,6 +9,8 @@
 
 class Material;
 
+class AABB;
+
 struct Hit_record {
 	
 	vec3d point;

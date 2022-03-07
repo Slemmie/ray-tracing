@@ -3,6 +3,7 @@
 #pragma once
 
 #include "util/util.h"
+#include "ray.h"
 
 class AABB {
 	
@@ -27,18 +28,4 @@ private:
 	
 };
 
-AABB sorrounding_box(AABB box0, AABB box1) {
-	vec3d smaller(
-	fmin(box0.minv().x(), box1.minv().x()),
-	fmin(box0.minv().y(), box1.minv().y()),
-	fmin(box0.minv().z(), box1.minv().z())
-	);
-	
-	vec3d bigger(
-	fmax(box0.maxv().x(), box1.maxv().x()),
-	fmax(box0.maxv().y(), box1.maxv().y()),
-	fmax(box0.maxv().z(), box1.maxv().z())
-	);
-	
-	return AABB(smaller, bigger);
-}
+AABB sorrounding_box(AABB box0, AABB box1);

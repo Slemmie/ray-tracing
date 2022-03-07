@@ -4,6 +4,8 @@
 
 #include "hittable.h"
 
+#include "AABB.h"
+
 #include <vector>
 #include <memory>
 

@@ -1,6 +1,8 @@
 // bounding volume hierarchy
 // data structur for faster queries of first hit() in a scene
 
+#pragma once
+
 #include "util/util.h"
 
 #include "hittable.h"
@@ -16,7 +18,7 @@ public:
 	BVH_node() { }
 	
 	BVH_node(const Hittable_list& _hittable_list, double _time_begin, double _time_end) :
-	BVH_node(hittable_list.surfaces(), 0, hittable_list.surfaces().size(), time_begin, time_end)
+	BVH_node(_hittable_list.surfaces(), 0, _hittable_list.surfaces().size(), _time_begin, _time_end)
 	{ }
 	
 	BVH_node(const std::vector <std::shared_ptr <Hittable>>& _surface_source,
@@ -24,7 +26,7 @@ public:
 	
 	virtual bool hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_record) const override;
 	
-	virtual constexpr bool bounding_box(double time_begin, double time_end, AABB& result_box) const override {
+	virtual inline bool bounding_box(double time_begin, double time_end, AABB& result_box) const override {
 		result_box = m_box;
 		return true;
 	}
@@ -37,9 +39,9 @@ private:
 	
 private:
 	
-	template <int AXIS> inline bool m_box_compare(
+	template <int AXIS> inline static bool m_box_compare(
 	const std::shared_ptr <Hittable> u,
-	const std::shared_ptr <Hittable> v) const {
+	const std::shared_ptr <Hittable> v) {
 		AABB box_u, box_v;
 		
 		if (!u->bounding_box(0.0, 0.0, box_u) || !v->bounding_box(0.0, 0.0, box_v)) {
