@@ -9,7 +9,7 @@ size_t _ptr_begin, size_t _ptr_end, double _time_begin, double _time_end) {
 	auto surfaces = _surface_source;
 	
 	int axis = Random::range_int(0, 3);
-	auto cmp = axis == 0 ? box_x_compare : axis == 1 ? box_y_compare : box_z_compare;
+	auto cmp = m_box_compare <axis>;
 	
 	size_t surface_size = _ptr_begin - _ptr_end;
 	

@@ -7,6 +7,7 @@
 #include "hittable_list.h"
 
 #include <memory>
+#include <iostream>
 
 class BVH_node : public Hittable {
 	
@@ -33,5 +34,19 @@ private:
 	std::shared_ptr <Hittable> m_left, m_right;
 	
 	AABB m_box;
+	
+private:
+	
+	template <int AXIS> inline bool m_box_compare(
+	const std::shared_ptr <Hittable> u,
+	const std::shared_ptr <Hittable> v) const {
+		AABB box_u, box_v;
+		
+		if (!u->bounding_box(0.0, 0.0, box_u) || !v->bounding_box(0.0, 0.0, box_v)) {
+			std::cerr << "[error]: use of BVH_node compare functions with missing bounding box" << std::endl;
+		}
+		
+		return box_u.minv()[AXIS] < box_v.minv()[AXIS];
+	}
 	
 };
