@@ -17,6 +17,9 @@ public:
 	
 	bool hit(const Rayd& ray, double t_min, double t_max) const;
 	
+	constexpr const vec3d& minv() const { return m_minv; }
+	constexpr const vec3d& maxv() const { return m_maxv; }
+	
 private:
 	
 	vec3d m_minv;
