@@ -35,4 +35,6 @@ public:
 	
 	virtual bool hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_record) const = 0;
 	
+	virtual bool bounding_box(double time_begin, double time_end, AABB& result_box) const = 0;
+	
 };
