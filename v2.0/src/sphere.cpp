@@ -2,6 +2,8 @@
 
 #include "sphere.h"
 
+#include "AABB.h"
+
 bool Sphere::hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_record) const {
 	vec3 oc = ray.origin() - m_center;
 	auto a = ray.direction().length_squared();
@@ -28,5 +30,12 @@ bool Sphere::hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_re
 	hit_record.set_face_normal(ray, outward_normal);
 	hit_record.material = m_material;
 	
+	return true;
+}
+
+bool Sphere::bounding_box(double time_begin, double time_end, AABB& result_box) const {
+	result_box = AABB(
+	m_center - vec3(m_radius, m_radius, m_radius),
+	m_center + vec3(m_radius, m_radius, m_radius));
 	return true;
 }
