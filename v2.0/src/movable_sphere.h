@@ -6,6 +6,10 @@
 #include "ray.h"
 #include "hittable.h"
 
+class Material;
+
+class AABB;
+
 // linearly movable
 class Moving_sphere : public Hittable {
 	
@@ -24,6 +28,8 @@ public:
 	{ }
 	
 	virtual bool hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_record) const override;
+	
+	virtual bool bounding_box(double time_begin, double time_end, AABB& result_box) const override;
 	
 	constexpr vec3d center(double time) const {
 		return m_center_begin + ((time - m_time_begin) / (m_time_end - m_time_begin)) *
