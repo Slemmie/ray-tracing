@@ -33,7 +33,7 @@ public:
 			scatter_direction = hit_record.normal;
 		}
 		
-		scattered = Ray(hit_record.point, scatter_direction);
+		scattered = Ray(hit_record.point, scatter_direction, ray.time());
 		attenuation = m_albedo;
 		return true;
 	}
@@ -56,7 +56,10 @@ public:
 	virtual bool scatter(const Rayd& ray, const Hit_record& hit_record,
 	vec3d& attenuation, Rayd& scattered) const override {
 		vec3 reflected = vec3d::reflect((ray.direction()).unit_vector(), hit_record.normal);
-		scattered = Ray(hit_record.point, reflected + m_fuzz * vec3d::random_in_unit_sphere());
+		scattered =
+		Ray(hit_record.point,
+		reflected + m_fuzz * vec3d::random_in_unit_sphere()
+		ray.time());
 		attenuation = m_albedo;
 		return dot(scattered.direction(), hit_record.normal) > 0.0;
 	}
@@ -91,7 +94,7 @@ public:
 		} else {
 			direction = vec3d::refract(unit_direction, hit_record.normal, refraction_ratio);
 		}
-		scattered = Ray(hit_record.point, direction);
+		scattered = Ray(hit_record.point, direction, ray.time());
 		return true;
 	}
 	
