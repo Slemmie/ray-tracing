@@ -35,6 +35,8 @@ public:
 		return m_surfaces[index];
 	}
 	
+	constexpr const std::vector <std::shared_ptr <Hittable>>& surfaces() const { return m_surfaces; }
+	
 private:
 	
 	std::vector <std::shared_ptr <Hittable>> m_surfaces;
