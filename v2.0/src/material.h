@@ -58,7 +58,7 @@ public:
 		vec3 reflected = vec3d::reflect((ray.direction()).unit_vector(), hit_record.normal);
 		scattered =
 		Ray(hit_record.point,
-		reflected + m_fuzz * vec3d::random_in_unit_sphere()
+		reflected + m_fuzz * vec3d::random_in_unit_sphere(),
 		ray.time());
 		attenuation = m_albedo;
 		return dot(scattered.direction(), hit_record.normal) > 0.0;

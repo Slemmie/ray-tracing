@@ -24,7 +24,7 @@ bool Moving_sphere::hit(const Rayd& ray, double t_min, double t_max, Hit_record&
 	
 	hit_record.t = root;
 	hit_record.point = ray.at(root);
-	vec3 outward_normal = (hit_record.point - center()) / m_radius;
+	vec3 outward_normal = (hit_record.point - center(ray.time())) / m_radius;
 	hit_record.set_face_normal(ray, outward_normal);
 	hit_record.material = m_material;
 	

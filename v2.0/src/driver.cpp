@@ -9,6 +9,7 @@
 #include "ray.h"
 #include "hittable_list.h"
 #include "sphere.h"
+#include "movable_sphere.h"
 #include "camera.h"
 #include "material.h"
 
@@ -60,7 +61,9 @@ Hittable_list make_scene() {
 				if (choose_mat < 0.8) {
 					auto albedo = vec3d::random() * vec3d::random();
 					sphere_material = std::make_shared <Lambertian> (albedo);
-					world.push(std::make_shared <Sphere> (center, 0.2, sphere_material));
+					auto center_end = center + vec3(0.0, Random::range(0.0, 0.5), 0.0);
+					world.push(std::make_shared <Moving_sphere>
+					(center, center_end, 0.0, 1.0, 0.2, sphere_material));
 				} else if (choose_mat < 0.95) {
 					auto albedo = vec3d::random(0.5, 1.0);
 					auto fuzz = Random::range(0.0, 0.5);
@@ -99,32 +102,21 @@ int main(int argc, char** argv) {
 	//int width = gp::window_width;
 	//int height = gp::window_height;
 	
-	//double aspect_ratio = (double) gp::window_width / (double) gp::window_height;
-	//int im_w = gp::window_width / 2;
-	//int im_h = static_cast <int> ((double) im_w / aspect_ratio);
-	double aspect_ratio = 3.0 / 2.0;
-	int im_w = 1200;
+	double aspect_ratio = 16.0 / 9.0;
+	int im_w = 400;
 	int im_h = static_cast <int> ((double) im_w / aspect_ratio);
-	int samples_per_pixel = 500;
+	int samples_per_pixel = 100;
 	int max_depth = 50;
 	
 	Hittable_list world = make_scene();
-	//auto material_ground = std::make_shared <Lambertian> (vec3(0.8, 0.8, 0.0));
-	//auto material_center = std::make_shared <Lambertian> (vec3(0.1, 0.2, 0.5));
-	//auto material_left = std::make_shared <Dielectric> (1.5);
-	//auto material_right = std::make_shared <Metal> (vec3(0.8, 0.6, 0.2), 0.0);
-	//world.push(std::make_shared <Sphere> (vec3( 0.0, -100.5, -1.0), 100.0, material_ground));
-	//world.push(std::make_shared <Sphere> (vec3( 0.0, 0.0, -1.0), 0.5, material_center));
-	//world.push(std::make_shared <Sphere> (vec3(-1.0, 0.0, -1.0), 0.5, material_left));
-	//world.push(std::make_shared <Sphere> (vec3(-1.0, 0.0, -1.0), -0.45, material_left));
-	//world.push(std::make_shared <Sphere> (vec3( 1.0, 0.0, -1.0), 0.5, material_right));
 	
 	vec3 look_from = vec3(13.0, 2.0, 3.0);
 	vec3 look_at = vec3(0.0, 0.0, 0.0);
 	vec3 vup = vec3(0.0, 1.0, 0.0);
 	double dist_to_focus = 10.0;
 	auto aperture = 0.1;
-	Camera camera(look_from, look_at, vup, 20.0, aspect_ratio, aperture, dist_to_focus);
+	Camera camera(look_from, look_at, vup, 20.0,
+	aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 	
 	//double vp_h = 2.0;
 	//double vp_w = aspect_ratio * vp_h;

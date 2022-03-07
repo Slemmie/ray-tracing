@@ -7,7 +7,7 @@
 #include "hittable.h"
 
 // linearly movable
-class Moving_sphere : public hittable {
+class Moving_sphere : public Hittable {
 	
 public:
 	
@@ -25,7 +25,7 @@ public:
 	
 	virtual bool hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_record) const override;
 	
-	constexpr const vec3d& center(double time) const {
+	constexpr vec3d center(double time) const {
 		return m_center_begin + ((time - m_time_begin) / (m_time_end - m_time_begin)) *
 		(m_center_end - m_center_begin);
 	}
