@@ -17,3 +17,22 @@ bool Hittable_list::hit(const Rayd& ray, double t_min, double t_max, Hit_record&
 	
 	return any_hits;
 }
+
+bool Hittable_list::bounding_box(double time_begin, double time_end, AABB& result_box) const {
+	if (m_surfaces.empty()) {
+		return false;
+	}
+	
+	AABB passer;
+	bool is_first_box = true;
+	
+	for (const auto& surface : m_surfaces) {
+		if (!surface->bounding_box(time_begin, time_end, passer)) {
+			return false;
+		}
+		result_box = is_first_box ? passer : sorrounding_box(result_box, passer);
+		is_first_box = false;
+	}
+	
+	return true;
+}
