@@ -25,4 +25,9 @@ public:
 		return min + (max - min) * real();
 	}
 	
+	// assumes some kind of integer type
+	template <typename A = int> inline static A range_int(A min, A max) {
+		return static_cast <A> (range(min, max + (A) 1));
+	}
+	
 };
