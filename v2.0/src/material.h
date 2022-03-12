@@ -25,7 +25,7 @@ class Lambertian : public Material {
 public:
 	
 	Lambertian(const vec3d& _albedo) :
-	m_albedo(std::make_shared <tex::Solid_color> _albedo)
+	m_albedo(std::make_shared <tex::Solid_color> (_albedo))
 	{ }
 	
 	Lambertian(std::shared_ptr <tex::Texture> _texture) :
@@ -47,7 +47,7 @@ public:
 	
 private:
 	
-	std::shared_ptr <vec3d> m_albedo;
+	std::shared_ptr <tex::Texture> m_albedo;
 	
 };
 
