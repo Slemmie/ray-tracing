@@ -23,6 +23,9 @@ struct Hit_record {
 	
 	bool front_face;
 	
+	// texture coordinates
+	double u, v;
+	
 	// normal points against the ray
 	inline void set_face_normal(const Rayd& ray, const vec3d& outward_normal) {
 		front_face = dot(ray.direction(), outward_normal) < 0.0;
