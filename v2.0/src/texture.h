@@ -73,15 +73,23 @@ namespace tex {
 		
 	public:
 		
-		Noise() { }
+		Noise() :
+		m_scale(1.0)
+		{ }
+		
+		Noise(double _scale) :
+		m_scale(_scale)
+		{ }
 		
 		virtual vec3d at(double u, double v, const vec3d& p) const override {
-			return vec3(1.0, 1.0, 1.0) * m_perlin.noise(p);
+			return vec3(1.0, 1.0, 1.0) * m_perlin.noise(m_scale * p);
 		}
 		
 	private:
 		
 		Perlin m_perlin;
+		
+		double m_scale;
 		
 	};
 	

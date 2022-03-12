@@ -37,7 +37,7 @@ namespace scene {
 	Hittable_list Two_perlin_spheres::get_world() {
 		Hittable_list result;
 		
-		auto perlin_texture = std::make_shared <tex::Noise> ();
+		auto perlin_texture = std::make_shared <tex::Noise> (4.0);
 		
 		result.push(std::make_shared <Sphere> (vec3(0.0, -1000.0, 0.0), 1000.0,
 		std::make_shared <Lambertian> (perlin_texture)));
