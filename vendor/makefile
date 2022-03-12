@@ -139,3 +139,39 @@ glm_headers:
 	make glm_reset_submodule
 	
 	@echo "OK"
+
+###############
+### [ stb ] ###
+###############
+
+## utiliy
+
+# reset submodule to its original state
+.PHONY: stb_reset_submodule
+stb_reset_submodule:
+	git submodule deinit -f ./stb/
+	git submodule update --init ./stb/
+
+# check for missing bits
+.PHONY: stb_error_check
+stb_error_check:
+	@if [ ! -d "./stb/" ]; then         \
+		echo "! stb submodule missing"; \
+		false;                          \
+	fi;
+
+# export headers
+.PHONY: stb_headers
+stb_headers:
+	# prepare
+	make stb_error_check
+	make stb_reset_submodule
+	if [ ! -d "./bin/stb/include/" ]; then mkdir -p ./bin/stb/include/; fi;
+	
+	# export
+	cp -r ./stb/stb_image.h ./bin/stb/include/
+	
+	# reset submodule
+	make stb_reset_submodule
+	
+	@echo "OK"
