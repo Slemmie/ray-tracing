@@ -3,6 +3,7 @@
 #pragma once
 
 #include "util/util.h"
+#include "perlin.h"
 
 #include <memory>
 
@@ -65,6 +66,22 @@ namespace tex {
 		
 		std::shared_ptr <Texture> m_texture_even;
 		std::shared_ptr <Texture> m_texture_odd;
+		
+	};
+	
+	class Noise : public Texture {
+		
+	public:
+		
+		Noise() { }
+		
+		virtual vec3d at(double u, double v, const vec3d& p) const override {
+			return vec3(1.0, 1.0, 1.0) * m_perlin.noise(p);
+		}
+		
+	private:
+		
+		Perlin m_perlin;
 		
 	};
 	
