@@ -151,3 +151,11 @@ glm_headers:
 stb_reset_submodule:
 	git submodule deinit -f ./stb/
 	git submodule update --init ./stb/
+
+# check for missing bits
+.PHONY: stb_error_check
+stb_error_check:
+	@if [ ! -d "./stb/" ]; then         \
+		echo "! stb submodule missing"; \
+		false;                          \
+	fi;
