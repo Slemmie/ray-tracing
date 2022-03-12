@@ -32,8 +32,9 @@
 #define SCENE_RANDOM_DEMO 3
 #define SCENE_EARTH 4
 #define SCENE_SIMPLE_LIGHT 5
+#define SCENE_CORNELL_BOX 6
 
-int SCENE = SCENE_SIMPLE_LIGHT;
+int SCENE = SCENE_CORNELL_BOX;
 
 //////////////////////////////////
 
@@ -90,6 +91,8 @@ void handle_cl_args(int argc, char** argv) {
 				SCENE = SCENE_EARTH;
 			} else if (str == scene::Simple_light().to_string()) {
 				SCENE = SCENE_SIMPLE_LIGHT;
+			} else if (str == scene::Cornell_box().to_string()) {
+				SCENE = SCENE_CORNELL_BOX;
 			} else {
 				std::cerr << "[warning]: unknown scene name provided" << std::endl;
 				continue;
@@ -110,7 +113,8 @@ void handle_cl_args(int argc, char** argv) {
 			scene::Two_perlin_spheres().to_string(), // SCENE_TWO_PERLIN_SPHERES
 			scene::Random_demo().to_string(),        // SCENE_RANDOM_DEMO
 			scene::Earth().to_string(),              // SCENE_EARTH
-			scene::Simple_light().to_string()        // SCENE_EARTH
+			scene::Simple_light().to_string(),       // SCENE_SIMPLE_LIGHT
+			scene::Cornell_box().to_string()         // SCENE_CORNELL_BOX
 		};
 		std::cerr << "[info]: setting scene to '" << sc_to_s[SCENE] << "'" << std::endl;
 	}
@@ -133,7 +137,6 @@ int main(int argc, char** argv) {
 	
 	double aspect_ratio = 16.0 / 9.0;
 	int im_w = 400;
-	int im_h = static_cast <int> ((double) im_w / aspect_ratio);
 	int samples_per_pixel = 100;
 	int max_depth = 50;
 	
@@ -175,10 +178,20 @@ int main(int argc, char** argv) {
 			samples_per_pixel = 400;
 			break;
 		}
+		case SCENE_CORNELL_BOX: {
+			scene::Cornell_box scen;
+			world = scen.get_world();
+			scen.set_params(look_from, look_at, vfov, aperture, background);
+			samples_per_pixel = 200;
+			aspect_ratio = 1.0;
+			break;
+		}
 		default:
 			std::cerr << "[fatal]: unknown scene id" << std::endl;
 			exit(EXIT_FAILURE);
 	};
+	
+	int im_h = static_cast <int> ((double) im_w / aspect_ratio);
 	
 	vec3 vup = vec3(0.0, 1.0, 0.0);
 	double dist_to_focus = 10.0;

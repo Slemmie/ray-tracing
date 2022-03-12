@@ -160,5 +160,31 @@ namespace scene {
 		_background = vec3(0.0, 0.0, 0.0);
 	}
 	
+	Hittable_list Cornell_box::get_world() {
+		Hittable_list result;
+		
+		auto red = std::make_shared <Lambertian> (vec3(0.65, 0.05, 0.05));
+		auto white = std::make_shared <Lambertian> (vec3(0.73, 0.73, 0.73));
+		auto green = std::make_shared <Lambertian> (vec3(0.12, 0.45, 0.15));
+		auto light = std::make_shared <Diffuse_light> (vec3(15.0, 15.0, 15.0));
+		
+		result.push(std::make_shared <YZ_rect> (0.0, 555.0, 0.0, 555.0, 555.0, green));
+		result.push(std::make_shared <YZ_rect> (0.0, 555.0, 0.0, 555.0, 0.0, red));
+		result.push(std::make_shared <XZ_rect> (213.0, 343.0, 227.0, 332.0, 554.0, light));
+		result.push(std::make_shared <XZ_rect> (0.0, 555.0, 0.0, 555.0,0.0, white));
+		result.push(std::make_shared <XZ_rect> (0.0, 555.0, 0.0, 555.0, 555.0, white));
+		result.push(std::make_shared <XY_rect> (0.0, 555.0, 0.0, 555.0, 555.0, white));
+		
+		return result;
+	}
+	
+	void Cornell_box::set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov,
+	double& _aperture, vec3d& _background) {
+		_look_from = vec3(278.0, 278.0, -800.0);
+		_look_at = vec3(278.0, 278.0, 0.0);
+		_vfov = 40.0;
+		_aperture = 0.0;
+		_background = vec3(0.0, 0.0, 0.0);
+	}
 	
 } /// namespace scene

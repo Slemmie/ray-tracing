@@ -26,7 +26,7 @@ namespace scene {
 		
 		virtual Hittable_list get_world() override;
 		
-		void set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture, vec3d& background);
+		void set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture, vec3d& _background);
 		
 		virtual std::string to_string() const override {
 			return "two_spheres";
@@ -40,7 +40,7 @@ namespace scene {
 		
 		virtual Hittable_list get_world() override;
 		
-		void set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture, vec3d& background);
+		void set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture, vec3d& _background);
 		
 		virtual std::string to_string() const override {
 			return "two_perlin_spheres";
@@ -54,7 +54,7 @@ namespace scene {
 		
 		virtual Hittable_list get_world() override;
 		
-		void set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture, vec3d& background);
+		void set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture, vec3d& _background);
 		
 		virtual std::string to_string() const override {
 			return "random_demo";
@@ -68,7 +68,7 @@ namespace scene {
 		
 		virtual Hittable_list get_world() override;
 		
-		void set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture, vec3d& background);
+		void set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture, vec3d& _background);
 		
 		virtual std::string to_string() const override {
 			return "earth";
@@ -82,10 +82,24 @@ namespace scene {
 		
 		virtual Hittable_list get_world() override;
 		
-		void set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture, vec3d& background);
+		void set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture, vec3d& _background);
 		
 		virtual std::string to_string() const override {
 			return "simple_light";
+		}
+		
+	};
+	
+	class Cornell_box : public Scene {
+		
+	public:
+		
+		virtual Hittable_list get_world() override;
+		
+		void set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture, vec3d& _background);
+		
+		virtual std::string to_string() const override {
+			return "cornell_box";
 		}
 		
 	};
