@@ -18,7 +18,7 @@ private:
 	
 	static constexpr const int m_point_count = 256;
 	
-	double* m_random_doubles;
+	vec3d* m_random_vectors;
 	
 	int* m_px;
 	int* m_py;
@@ -31,5 +31,7 @@ private:
 	static void m_permute(int n, int* p);
 	
 	static double m_trilinear_interpolate(double c[2][2][2], double u, double v, double w);
+	
+	static double m_perlin_interpolate(vec3d c[2][2][2], double u, double v, double w);
 	
 };
