@@ -85,7 +85,8 @@ namespace gp {
 	
 	void Single_texture_static_renderer::on_update() {
 		// check if updating the texture is requested since previous frame
-		if (m_texture_flush_limit_counter > m_texture_flush_limit) {
+		if (m_wants_flush || m_texture_flush_limit_counter > m_texture_flush_limit) {
+			m_wants_flush = false;
 			std::lock_guard <std::mutex> lock(m_texture_flush_mutex);
 			m_texture_flush_limit_counter = 0;
 			m_bind_texture();

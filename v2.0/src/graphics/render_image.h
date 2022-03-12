@@ -59,7 +59,15 @@ namespace gp {
 			// the main rendering thread checks each frame if it should flush the buffer
 		}
 		
+		// force flusing
+		inline void flush_pixel_buffer() {
+			m_wants_flush = true;
+		}
+		
 	private: // texture section
+		
+		// flag can be set at any time for flushing
+		std::atomic <bool> m_wants_flush = false;
 		
 		// rewrite the texture when update_pixel has been called this many times
 		int m_texture_flush_limit;

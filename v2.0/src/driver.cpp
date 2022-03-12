@@ -139,6 +139,7 @@ int main(int argc, char** argv) {
 	// multithreaded access to global index counter
 	std::atomic <int> current_index = 0;
 	std::atomic <bool> terminate_threads = false;
+	std::atomic <int> finished_workers = 0;
 	
 	// a calculating thread runs this
 	auto inl_job = [&] () -> void {
@@ -169,6 +170,8 @@ int main(int argc, char** argv) {
 			
 			stst->update_pixel(color * 256.0, i, j);
 		}
+		
+		finished_workers++;
 	};
 	
 	// launch threads
@@ -179,6 +182,12 @@ int main(int argc, char** argv) {
 	
 	while (!glfwWindowShouldClose(gp::window)) {
 		glClear(GL_COLOR_BUFFER_BIT);
+		
+		static bool did_final_flush = false;
+		if (!did_final_flush && finished_workers == num_threads) {
+			did_final_flush = true;
+			stst->flush_pixel_buffer();
+		}
 		
 		stst->on_update();
 		
