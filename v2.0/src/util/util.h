@@ -16,7 +16,7 @@ template <typename A> constexpr A clamp(const A& value, const A& min, const A& m
 	return value < min ? min : value > max ? max : value;
 }
 
-// as well as the rest of util/...
+// as well as the rest of util/... (mostly)
 
 #include "vec3.h"
 #include "random.h"
