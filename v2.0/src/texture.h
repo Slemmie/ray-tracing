@@ -111,7 +111,7 @@ namespace tex {
 		Image(const char* filepath) {
 			int comp_per_pixel = m_bytes_per_pixel;
 			
-			m_data = stbi_load(filepath, &m_width, &m_width, &comp_per_pixel, comp_per_pixel);
+			m_data = stbi_load(filepath, &m_width, &m_height, &comp_per_pixel, comp_per_pixel);
 			
 			if (!m_data) {
 				std::cerr << "[error]: failed to load image '" << filepath << "'" << std::endl;
@@ -130,7 +130,7 @@ namespace tex {
 		
 		virtual vec3d at(double u, double v, const vec3d& p) const override {
 			if (!m_data) {
-				return vec3(0.1, 0.9, 1.0);
+				return vec3(1.0, 0.0, 1.0);
 			}
 			
 			u = std::clamp(u, 0.0, 1.0);

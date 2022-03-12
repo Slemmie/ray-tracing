@@ -62,4 +62,18 @@ namespace scene {
 		
 	};
 	
+	class Earth : public Scene {
+		
+	public:
+		
+		virtual Hittable_list get_world() override;
+		
+		void set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture);
+		
+		virtual std::string to_string() const override {
+			return "earth";
+		}
+		
+	};
+	
 } /// namespace scene

@@ -30,8 +30,9 @@
 #define SCENE_TWO_SPHERES 1
 #define SCENE_TWO_PERLIN_SPHERES 2
 #define SCENE_RANDOM_DEMO 3
+#define SCENE_EARTH 4
 
-int SCENE = SCENE_TWO_PERLIN_SPHERES;
+int SCENE = SCENE_EARTH;
 
 //////////////////////////////////
 
@@ -80,6 +81,8 @@ void handle_cl_args(int argc, char** argv) {
 				SCENE = SCENE_TWO_PERLIN_SPHERES;
 			} else if (str == scene::Random_demo().to_string()) {
 				SCENE = SCENE_RANDOM_DEMO;
+			} else if (str == scene::Earth().to_string()) {
+				SCENE = SCENE_EARTH;
 			} else {
 				std::cerr << "[warning]: unknown scene name provided" << std::endl;
 				continue;
@@ -98,7 +101,8 @@ void handle_cl_args(int argc, char** argv) {
 			"[unknown]",
 			scene::Two_spheres().to_string(),        // SCENE_TWO_SPHERES
 			scene::Two_perlin_spheres().to_string(), // SCENE_TWO_PERLIN_SPHERES
-			scene::Random_demo().to_string()         // SCENE_RANDOM_DEMO
+			scene::Random_demo().to_string(),        // SCENE_RANDOM_DEMO
+			scene::Earth().to_string()               // SCENE_EARTH
 		};
 		std::cerr << "[info]: setting scene to '" << sc_to_s[SCENE] << "'" << std::endl;
 	}
@@ -145,6 +149,12 @@ int main(int argc, char** argv) {
 		}
 		case SCENE_RANDOM_DEMO: {
 			scene::Random_demo scen;
+			world = scen.get_world();
+			scen.set_params(look_from, look_at, vfov, aperture);
+			break;
+		}
+		case SCENE_EARTH: {
+			scene::Earth scen;
 			world = scen.get_world();
 			scen.set_params(look_from, look_at, vfov, aperture);
 			break;

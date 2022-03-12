@@ -107,4 +107,21 @@ namespace scene {
 		_aperture = 0.1;
 	}
 	
+	Hittable_list Earth::get_world() {
+		auto earth_texture = std::make_shared <tex::Image> ("img/earth_map.jpg");
+		
+		auto earth_surface = std::make_shared <Lambertian> (earth_texture);
+		
+		auto globe_sphere = std::make_shared <Sphere> (vec3(0.0, 0.0, 0.0), 2.0, earth_surface);
+		
+		return Hittable_list(globe_sphere);
+	}
+	
+	void Earth::set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture) {
+		_look_from = vec3(13.0, 2.0, 3.0);
+		_look_at = vec3(0.0, 0.0, 0.0);
+		_vfov = 20.0;
+		_aperture = 0.0;
+	}
+	
 } /// namespace scene
