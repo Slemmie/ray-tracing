@@ -82,7 +82,8 @@ namespace tex {
 		{ }
 		
 		virtual vec3d at(double u, double v, const vec3d& p) const override {
-			return vec3(1.0, 1.0, 1.0) * m_perlin.turbulence(m_scale * p);
+			return vec3(1.0, 1.0, 1.0) * 0.5 *
+			(1.0 + sin(m_scale * p.z() + 10.0 * m_perlin.turbulence(p)));
 		}
 		
 	private:
