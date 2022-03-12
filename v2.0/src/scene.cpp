@@ -27,11 +27,13 @@ namespace scene {
 		return result;
 	}
 	
-	void Two_spheres::set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture) {
+	void Two_spheres::set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov,
+	double& _aperture, vec3d& _background) {
 		_look_from = vec3(13.0, 2.0, 3.0);
 		_look_at = vec3(0.0, 0.0, 0.0);
 		_vfov = 20.0;
 		_aperture = 0.0;
+		_background = vec3(0.7, 0.8, 1.0);
 	}
 	
 	Hittable_list Two_perlin_spheres::get_world() {
@@ -48,11 +50,13 @@ namespace scene {
 		return result;
 	}
 	
-	void Two_perlin_spheres::set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture) {
+	void Two_perlin_spheres::set_params(vec3d& _look_from, vec3d& _look_at,
+	double& _vfov, double& _aperture, vec3d& _background) {
 		_look_from = vec3(13.0, 2.0, 3.0);
 		_look_at = vec3(0.0, 0.0, 0.0);
 		_vfov = 20.0;
 		_aperture = 0.0;
+		_background = vec3(0.7, 0.8, 1.0);
 	}
 	
 	Hittable_list Random_demo::get_world() {
@@ -100,11 +104,13 @@ namespace scene {
 		return result;
 	}
 	
-	void Random_demo::set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture) {
+	void Random_demo::set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov,
+	double& _aperture, vec3d& _background) {
 		_look_from = vec3(13.0, 2.0, 3.0);
 		_look_at = vec3(0.0, 0.0, 0.0);
 		_vfov = 20.0;
 		_aperture = 0.1;
+		_background = vec3(0.7, 0.8, 1.0);
 	}
 	
 	Hittable_list Earth::get_world() {
@@ -117,11 +123,13 @@ namespace scene {
 		return Hittable_list(globe_sphere);
 	}
 	
-	void Earth::set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture) {
+	void Earth::set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov,
+	double& _aperture, vec3d& _background) {
 		_look_from = vec3(13.0, 2.0, 3.0);
 		_look_at = vec3(0.0, 0.0, 0.0);
 		_vfov = 20.0;
 		_aperture = 0.0;
+		_background = vec3(0.7, 0.8, 1.0);
 	}
 	
 } /// namespace scene

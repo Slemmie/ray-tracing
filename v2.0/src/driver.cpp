@@ -47,22 +47,26 @@ namespace gp {
 	
 } /// namespace gp
 
-vec3d ray_color(const Rayd& ray, const Hittable& world, int depth) {
+vec3d ray_color(const Rayd& ray, const vec3d& background, const Hittable& world, int depth) {
 	if (depth <= 0) {
 		return vec3(0.0, 0.0, 0.0);
 	}
+	
 	Hit_record record;
-	if (world.hit(ray, 0.001, INF, record)) {
-		Ray scattered;
-		vec3d attenuation;
-		if (record.material->scatter(ray, record, attenuation, scattered)) {
-			return attenuation * ray_color(scattered, world, depth - 1);
-		}
-		return vec3(0.0, 0.0, 0.0);
+	
+	if (!world.hit(ray, 0.001, INF, record)) {
+		return background;
 	}
-	vec3 unit_dir = ray.direction().unit_vector();
-	auto t = 0.5 * (unit_dir.y() + 1.0);
-	return (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
+	
+	Ray scattered;
+	vec3d attenuation;
+	vec3d emitted = record.material->emitted(record.u, record.v, record.p);
+	
+	if (!record.material->scatter(ray, record, attenuation, scattered)) {
+		return emitted;
+	}
+	
+	return emitted + attenuation + ray_color(scattered, background, world, depth - 1);
 }
 
 void handle_cl_args(int argc, char** argv) {
@@ -133,30 +137,31 @@ int main(int argc, char** argv) {
 	vec3 look_from, look_at;
 	double vfov = 40.0;
 	double aperture = 0.0;
+	vec3d background(0.0, 0.0, 0.0);
 	
 	switch (SCENE) {
 		case SCENE_TWO_SPHERES: {
 			scene::Two_spheres scen;
 			world = scen.get_world();
-			scen.set_params(look_from, look_at, vfov, aperture);
+			scen.set_params(look_from, look_at, vfov, aperture, background);
 			break;
 		}
 		case SCENE_TWO_PERLIN_SPHERES: {
 			scene::Two_perlin_spheres scen;
 			world = scen.get_world();
-			scen.set_params(look_from, look_at, vfov, aperture);
+			scen.set_params(look_from, look_at, vfov, aperture, background);
 			break;
 		}
 		case SCENE_RANDOM_DEMO: {
 			scene::Random_demo scen;
 			world = scen.get_world();
-			scen.set_params(look_from, look_at, vfov, aperture);
+			scen.set_params(look_from, look_at, vfov, aperture, background);
 			break;
 		}
 		case SCENE_EARTH: {
 			scene::Earth scen;
 			world = scen.get_world();
-			scen.set_params(look_from, look_at, vfov, aperture);
+			scen.set_params(look_from, look_at, vfov, aperture, background);
 			break;
 		}
 		default:
