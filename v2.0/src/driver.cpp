@@ -71,30 +71,30 @@ void handle_cl_args(int argc, char** argv) {
 		
 		if (str.substr(0, 2) == "s=") {
 			str = str.substr(2);
-			std::cerr << "setting scene to '" << str << "'" << std::endl;
+			std::cerr << "[info]: setting scene to '" << str << "'" << std::endl;
 			if (str == "two_spheres") {
 				SCENE = SCENE_TWO_SPHERES;
 			} else if (str == "random_demo") {
 				SCENE = SCENE_RANDOM_DEMO;
 			} else {
-				std::cerr << "unknown scene" << std::endl;
+				std::cerr << "[warning]: unknown scene name provided" << std::endl;
 				continue;
 			}
 			arg_found_scene = true;
 			continue;
 		}
 		
-		std::cerr << "setting thread count to " << argv[i] << std::endl;
+		std::cerr << "[info]: setting thread count to " << argv[i] << std::endl;
 		num_threads = std::stoi(argv[i]);
 		arg_found_tc = true;
 	}
 	
 	if (!arg_found_scene) {
-		std::cerr << "setting scene to 'two_spheres'" << std::endl;
+		std::cerr << "[info]: setting scene to 'two_spheres'" << std::endl;
 	}
 	
 	if (!arg_found_tc) {
-		std::cerr << "setting thread count to 1" << std::endl;
+		std::cerr << "[info]: setting thread count to 1" << std::endl;
 	}
 }
 
