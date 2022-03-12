@@ -7,6 +7,7 @@
 #include "material.h"
 #include "sphere.h"
 #include "movable_sphere.h"
+#include "aa_rect.h"
 
 #include <memory>
 
@@ -131,5 +132,33 @@ namespace scene {
 		_aperture = 0.0;
 		_background = vec3(0.7, 0.8, 1.0);
 	}
+	
+	Hittable_list Simple_light::get_world() {
+		Hittable_list result;
+		
+		auto perlin_texture = std::make_shared <tex::Noise> (4.0);
+		
+		result.push(std::make_shared <Sphere> (vec3(0.0, -1000.0, 0.0), 1000.0,
+		std::make_shared <Lambertian> (perlin_texture)));
+		
+		result.push(std::make_shared <Sphere> (vec3(0.0, 2.0, 0.0), 2.0,
+		std::make_shared <Lambertian> (perlin_texture)));
+		
+		auto diffuse_light = std::make_shared <Diffuse_light> (vec3(4.0, 4.0, 4.0));
+		
+		result.push(std::make_shared <AA_rect> (3.0, 5.0, 1.0, 3.0, -2.0, diffuse_light));
+		
+		return result;
+	}
+	
+	void Simple_light::set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov,
+	double& _aperture, vec3d& _background) {
+		_look_from = vec3(26.0, 3.0, 6.0);
+		_look_at = vec3(0.0, 2.0, 0.0);
+		_vfov = 20.0;
+		_aperture = 0.0;
+		_background = vec3(0.0, 0.0, 0.0);
+	}
+	
 	
 } /// namespace scene

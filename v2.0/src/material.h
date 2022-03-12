@@ -125,12 +125,12 @@ class Diffuse_light : public Material {
 	
 public:
 	
-	Diffuse_light(std::shared_ptr <Texture> _texture) :
+	Diffuse_light(std::shared_ptr <tex::Texture> _texture) :
 	m_emit(_texture)
 	{ }
 	
 	Diffuse_light(const vec3d& _color) :
-	m_emit(std::make_shared <Solid_color> (_color))
+	m_emit(std::make_shared <tex::Solid_color> (_color))
 	{ }
 	
 	virtual bool scatter(const Rayd& ray, const Hit_record& hit_record,

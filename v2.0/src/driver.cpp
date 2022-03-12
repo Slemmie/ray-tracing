@@ -31,8 +31,9 @@
 #define SCENE_TWO_PERLIN_SPHERES 2
 #define SCENE_RANDOM_DEMO 3
 #define SCENE_EARTH 4
+#define SCENE_SIMPLE_LIGHT 5
 
-int SCENE = SCENE_EARTH;
+int SCENE = SCENE_SIMPLE_LIGHT;
 
 //////////////////////////////////
 
@@ -60,13 +61,13 @@ vec3d ray_color(const Rayd& ray, const vec3d& background, const Hittable& world,
 	
 	Ray scattered;
 	vec3d attenuation;
-	vec3d emitted = record.material->emitted(record.u, record.v, record.p);
+	vec3d emitted = record.material->emitted(record.u, record.v, record.point);
 	
 	if (!record.material->scatter(ray, record, attenuation, scattered)) {
 		return emitted;
 	}
 	
-	return emitted + attenuation + ray_color(scattered, background, world, depth - 1);
+	return emitted + attenuation * ray_color(scattered, background, world, depth - 1);
 }
 
 void handle_cl_args(int argc, char** argv) {
@@ -87,6 +88,8 @@ void handle_cl_args(int argc, char** argv) {
 				SCENE = SCENE_RANDOM_DEMO;
 			} else if (str == scene::Earth().to_string()) {
 				SCENE = SCENE_EARTH;
+			} else if (str == scene::Simple_light().to_string()) {
+				SCENE = SCENE_SIMPLE_LIGHT;
 			} else {
 				std::cerr << "[warning]: unknown scene name provided" << std::endl;
 				continue;
@@ -106,7 +109,8 @@ void handle_cl_args(int argc, char** argv) {
 			scene::Two_spheres().to_string(),        // SCENE_TWO_SPHERES
 			scene::Two_perlin_spheres().to_string(), // SCENE_TWO_PERLIN_SPHERES
 			scene::Random_demo().to_string(),        // SCENE_RANDOM_DEMO
-			scene::Earth().to_string()               // SCENE_EARTH
+			scene::Earth().to_string(),              // SCENE_EARTH
+			scene::Simple_light().to_string()        // SCENE_EARTH
 		};
 		std::cerr << "[info]: setting scene to '" << sc_to_s[SCENE] << "'" << std::endl;
 	}
@@ -164,6 +168,13 @@ int main(int argc, char** argv) {
 			scen.set_params(look_from, look_at, vfov, aperture, background);
 			break;
 		}
+		case SCENE_SIMPLE_LIGHT: {
+			scene::Simple_light scen;
+			world = scen.get_world();
+			scen.set_params(look_from, look_at, vfov, aperture, background);
+			samples_per_pixel = 400;
+			break;
+		}
 		default:
 			std::cerr << "[fatal]: unknown scene id" << std::endl;
 			exit(EXIT_FAILURE);
@@ -210,7 +221,7 @@ int main(int argc, char** argv) {
 				auto u = (i + Random::real()) / (im_w - 1);
 				auto v = (j + Random::real()) / (im_h - 1);
 				Ray ray = camera.get_ray(u, v);
-				color += ray_color(ray, world, max_depth);
+				color += ray_color(ray, background, world, max_depth);
 			}
 			double scale = 1.0 / (double) samples_per_pixel;
 			color.r() = sqrt(scale * color.r());

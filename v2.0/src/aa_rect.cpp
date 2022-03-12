@@ -2,6 +2,8 @@
 
 #include "aa_rect.h"
 
+#include "AABB.h"
+
 bool AA_rect::hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_record) const {
 	double t = (m_k - ray.origin().z()) / ray.direction().z();
 	
