@@ -4,8 +4,11 @@
 
 #include "util/util.h"
 #include "perlin.h"
+#include "util/stb_image_impl.h"
 
 #include <memory>
+#include <iostream>
+#include <algorithm>
 
 namespace tex {
 	
@@ -91,6 +94,69 @@ namespace tex {
 		Perlin m_perlin;
 		
 		double m_scale;
+		
+	};
+	
+	class Image : public Texture {
+		
+	public:
+		
+		Image() :
+		m_data(nullptr),
+		m_width(0),
+		m_height(0),
+		m_bytes_per_scanline(0)
+		{ }
+		
+		Image(const char* filepath) {
+			int comp_per_pixel = m_bytes_per_pixel;
+			
+			m_data = stbi_load(filepath, &m_width, &m_width, &comp_per_pixel, comp_per_pixel);
+			
+			if (!m_data) {
+				std::cerr << "[error]: failed to load image '" << filepath << "'" << std::endl;
+				m_width = m_height = 0;
+				return;
+			}
+			
+			m_bytes_per_scanline = m_bytes_per_pixel * m_width;
+		}
+		
+		~Image() {
+			if (m_data) {
+				delete m_data;
+			}
+		}
+		
+		virtual vec3d at(double u, double v, const vec3d& p) const override {
+			if (!m_data) {
+				return vec3(0.1, 0.9, 1.0);
+			}
+			
+			u = std::clamp(u, 0.0, 1.0);
+			v = 1.0 - std::clamp(v, 0.0, 1.0);
+			
+			int i = static_cast <int> (u * m_width);
+			int j = static_cast <int> (v * m_height);
+			
+			i = std::min(i, m_width - 1);
+			j = std::min(j, m_height - 1);
+			
+			static constexpr const double color_scale = 1.0 / 255.0;
+			auto pixel = m_data + j * m_bytes_per_scanline + i * m_bytes_per_pixel;
+			
+			return color_scale * vec3d(pixel[0], pixel[1], pixel[2]);
+		}
+		
+	private:
+		
+		static constexpr const int m_bytes_per_pixel = 3;
+		
+		unsigned char* m_data;
+		
+		int m_width, m_height;
+		
+		int m_bytes_per_scanline;
 		
 	};
 	
