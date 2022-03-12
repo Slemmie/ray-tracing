@@ -139,3 +139,15 @@ glm_headers:
 	make glm_reset_submodule
 	
 	@echo "OK"
+
+###############
+### [ stb ] ###
+###############
+
+## utiliy
+
+# reset submodule to its original state
+.PHONY: stb_reset_submodule
+stb_reset_submodule:
+	git submodule deinit -f ./stb/
+	git submodule update --init ./stb/
