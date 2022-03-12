@@ -5,8 +5,10 @@
 #include "hittable.h"
 #include "ray.h"
 #include "util/vec3.h"
+#include "util/util.h"
 
 #include <memory>
+#include <cmath>
 
 class Material;
 
@@ -39,5 +41,15 @@ private:
 	double m_radius;
 	
 	std::shared_ptr <Material> m_material;
+	
+private:
+	
+	static inline void m_sphere_uv(double& u, double& v, const vec3d& p) {
+		auto theta = acos(-p.y());
+		auto phi = atan2(-p.z(), p.x()) + PI;
+		
+		u = phi / (PI * 2.0);
+		v = theta / PI;
+	}
 	
 };
