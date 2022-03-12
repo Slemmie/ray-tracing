@@ -14,6 +14,8 @@ public:
 	
 	double noise(const vec3d& point) const;
 	
+	double turbulence(const vec3d& point, int depth = 7) const;
+	
 private:
 	
 	static constexpr const int m_point_count = 256;

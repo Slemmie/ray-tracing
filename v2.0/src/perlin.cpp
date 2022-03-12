@@ -3,6 +3,7 @@
 #include "perlin.h"
 
 #include <utility>
+#include <cmath>
 
 Perlin::Perlin() :
 m_px(m_generate_permutation()),
@@ -43,6 +44,20 @@ double Perlin::noise(const vec3d& point) const {
 	}
 	
 	return m_perlin_interpolate(c, u, v, w);
+}
+
+double Perlin::turbulence(const vec3d& point, int depth) const {
+	double sum = 0.0;
+	double wei = 1.0;
+	vec3 tmp_p = point;
+	
+	for (int i = 0; i < depth; i++) {
+		sum += wei * noise(tmp_p);
+		tmp_p *= 2.0;
+		wei *= 0.5;
+	}
+	
+	return fabs(sum);
 }
 
 int* Perlin::m_generate_permutation() {
