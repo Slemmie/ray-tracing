@@ -12,12 +12,14 @@
 #include "movable_sphere.h"
 #include "camera.h"
 #include "material.h"
+#include "texture.h"
 
 #include <vector>
 #include <algorithm>
 #include <iostream>
 #include <atomic>
 #include <thread>
+#include <memory>
 
 namespace gp {
 	
@@ -49,8 +51,10 @@ vec3d ray_color(const Rayd& ray, const Hittable& world, int depth) {
 Hittable_list make_scene() {
 	Hittable_list world;
 	
-	auto ground_material = std::make_shared <Lambertian> (vec3(0.5, 0.5, 0.5));
-	world.push(std::make_shared <Sphere> (vec3(0.0, -1000.0, 0.0), 1000.0, ground_material));
+	//auto ground_material = std::make_shared <Lambertian> (vec3(0.5, 0.5, 0.5));
+	auto checker_ground = std::make_shared <tex::Checkers> (vec3(0.2, 0.3, 0.1), vec3(0.9, 0.9, 0.9));
+	world.push(std::make_shared <Sphere> (vec3(0.0, -1000.0, 0.0), 1000.0,
+	std::make_shared <Lambertian> (checker_ground)));
 	
 	for (int a = -11; a < 11; a++) {
 		for (int b = -11; b < 11; b++) {
