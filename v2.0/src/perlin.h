@@ -30,4 +30,6 @@ private:
 	
 	static void m_permute(int n, int* p);
 	
+	static double m_trilinear_interpolate(double c[2][2][2], double u, double v, double w);
+	
 };

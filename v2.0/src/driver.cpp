@@ -120,7 +120,7 @@ int main(int argc, char** argv) {
 	//int height = gp::window_height;
 	
 	double aspect_ratio = 16.0 / 9.0;
-	int im_w = 800;
+	int im_w = 400;
 	int im_h = static_cast <int> ((double) im_w / aspect_ratio);
 	int samples_per_pixel = 100;
 	int max_depth = 50;
