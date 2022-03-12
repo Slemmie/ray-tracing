@@ -4,6 +4,8 @@
 
 #include "util/util.h"
 
+#include <memory>
+
 namespace tex {
 	
 	class Texture {
@@ -24,8 +26,8 @@ namespace tex {
 		m_color(_color)
 		{ }
 		
-		Solid_color(double red, double green, double blue) :
-		Solid_color(vec3d(red, green, blue))
+		Solid_color(double _red, double _green, double _blue) :
+		Solid_color(vec3d(_red, _green, _blue))
 		{ }
 		
 		virtual vec3d at(double u, double v, const vec3d& p) const override {
@@ -35,6 +37,34 @@ namespace tex {
 	private:
 		
 		vec3d m_color;
+		
+	};
+	
+	class Checkers : public Texture {
+		
+	public:
+		
+		Checkers() { }
+		
+		Checkers(std::shared_ptr <Texture> _texture_even, std::shared_ptr <Texture> _texture_odd) :
+		m_texture_even(_texture_even),
+		m_texture_odd(_texture_odd)
+		{ }
+		
+		Checkers(const vec3d& _color_even, const vec3d& _color_odd) :
+		m_texture_even(std::make_shared <Solid_color> (_color_even)),
+		m_texture_odd(std::make_shared <Solid_color> (_color_odd))
+		{ }
+		
+		virtual vec3d at(double u, double v, const vec3d& p) const override {
+			auto sines = sin(p.x() * 10.0) * sin(p.y() * 10.0) * sin(p.z() * 10.0);
+			return sines < 0.0 ? m_texture_odd->at(u, v, p) : m_texture_even->at(u, v, p);
+		}
+		
+	private:
+		
+		std::shared_ptr <Texture> m_texture_even;
+		std::shared_ptr <Texture> m_texture_odd;
 		
 	};
 	
