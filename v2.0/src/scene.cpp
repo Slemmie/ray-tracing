@@ -34,6 +34,27 @@ namespace scene {
 		_aperture = 0.0;
 	}
 	
+	Hittable_list Two_perlin_spheres::get_world() {
+		Hittable_list result;
+		
+		auto perlin_texture = std::make_shared <tex::Noise> ();
+		
+		result.push(std::make_shared <Sphere> (vec3(0.0, -1000.0, 0.0), 1000.0,
+		std::make_shared <Lambertian> (perlin_texture)));
+		
+		result.push(std::make_shared <Sphere> (vec3(0.0, 2.0, 0.0), 2.0,
+		std::make_shared <Lambertian> (perlin_texture)));
+		
+		return result;
+	}
+	
+	void Two_perlin_spheres::set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture) {
+		_look_from = vec3(13.0, 2.0, 3.0);
+		_look_at = vec3(0.0, 0.0, 0.0);
+		_vfov = 20.0;
+		_aperture = 0.0;
+	}
+	
 	Hittable_list Random_demo::get_world() {
 		Hittable_list result;
 		

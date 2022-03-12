@@ -21,15 +21,17 @@
 #include <atomic>
 #include <thread>
 #include <memory>
+#include <string>
 
 // hard coded scene ids for now //
 
 // can be changed from command line
 
 #define SCENE_TWO_SPHERES 1
-#define SCENE_RANDOM_DEMO 2
+#define SCENE_TWO_PERLIN_SPHERES 2
+#define SCENE_RANDOM_DEMO 3
 
-int SCENE = SCENE_TWO_SPHERES;
+int SCENE = SCENE_TWO_PERLIN_SPHERES;
 
 //////////////////////////////////
 
@@ -72,9 +74,11 @@ void handle_cl_args(int argc, char** argv) {
 		if (str.substr(0, 2) == "s=") {
 			str = str.substr(2);
 			std::cerr << "[info]: setting scene to '" << str << "'" << std::endl;
-			if (str == "two_spheres") {
+			if (str == scene::Two_spheres().to_string()) {
 				SCENE = SCENE_TWO_SPHERES;
-			} else if (str == "random_demo") {
+			} else if (str == scene::Two_perlin_spheres().to_string()) {
+				SCENE = SCENE_TWO_PERLIN_SPHERES;
+			} else if (str == scene::Random_demo().to_string()) {
 				SCENE = SCENE_RANDOM_DEMO;
 			} else {
 				std::cerr << "[warning]: unknown scene name provided" << std::endl;
@@ -90,11 +94,17 @@ void handle_cl_args(int argc, char** argv) {
 	}
 	
 	if (!arg_found_scene) {
-		std::cerr << "[info]: setting scene to 'two_spheres'" << std::endl;
+		static std::string sc_to_s[] = {
+			"[unknown]",
+			scene::Two_spheres().to_string(),        // SCENE_TWO_SPHERES
+			scene::Two_perlin_spheres().to_string(), // SCENE_TWO_PERLIN_SPHERES
+			scene::Random_demo().to_string()         // SCENE_RANDOM_DEMO
+		};
+		std::cerr << "[info]: setting scene to '" << sc_to_s[SCENE] << "'" << std::endl;
 	}
 	
 	if (!arg_found_tc) {
-		std::cerr << "[info]: setting thread count to 1" << std::endl;
+		std::cerr << "[info]: setting thread count to " << num_threads << std::endl;
 	}
 }
 
@@ -110,7 +120,7 @@ int main(int argc, char** argv) {
 	//int height = gp::window_height;
 	
 	double aspect_ratio = 16.0 / 9.0;
-	int im_w = 400;
+	int im_w = 800;
 	int im_h = static_cast <int> ((double) im_w / aspect_ratio);
 	int samples_per_pixel = 100;
 	int max_depth = 50;
@@ -121,13 +131,19 @@ int main(int argc, char** argv) {
 	double aperture = 0.0;
 	
 	switch (SCENE) {
-		case 1: {
+		case SCENE_TWO_SPHERES: {
 			scene::Two_spheres scen;
 			world = scen.get_world();
 			scen.set_params(look_from, look_at, vfov, aperture);
 			break;
 		}
-		case 2: {
+		case SCENE_TWO_PERLIN_SPHERES: {
+			scene::Two_perlin_spheres scen;
+			world = scen.get_world();
+			scen.set_params(look_from, look_at, vfov, aperture);
+			break;
+		}
+		case SCENE_RANDOM_DEMO: {
 			scene::Random_demo scen;
 			world = scen.get_world();
 			scen.set_params(look_from, look_at, vfov, aperture);
