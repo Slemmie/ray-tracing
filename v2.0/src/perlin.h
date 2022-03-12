@@ -16,7 +16,7 @@ public:
 	
 private:
 	
-	static const int m_point_count = 256;
+	static constexpr const int m_point_count = 256;
 	
 	double* m_random_doubles;
 	
@@ -28,6 +28,6 @@ private:
 	
 	static int* m_generate_permutation();
 	
-	static void permute(int n, int* p);
+	static void m_permute(int n, int* p);
 	
 };
