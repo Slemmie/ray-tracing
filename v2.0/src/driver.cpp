@@ -13,6 +13,7 @@
 #include "camera.h"
 #include "material.h"
 #include "texture.h"
+#include "scene.h"
 
 #include <vector>
 #include <algorithm>
@@ -20,6 +21,19 @@
 #include <atomic>
 #include <thread>
 #include <memory>
+
+// hard coded scene ids for now //
+
+// can be changed from command line
+
+#define SCENE_TWO_SPHERES 1
+#define SCENE_RANDOM_DEMO 2
+
+int SCENE = SCENE_TWO_SPHERES;
+
+//////////////////////////////////
+
+int num_threads = 1;
 
 namespace gp {
 	
@@ -48,56 +62,45 @@ vec3d ray_color(const Rayd& ray, const Hittable& world, int depth) {
 	return (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
 }
 
-Hittable_list make_scene() {
-	Hittable_list world;
+void handle_cl_args(int argc, char** argv) {
+	bool arg_found_scene = false;
+	bool arg_found_tc = false;
 	
-	//auto ground_material = std::make_shared <Lambertian> (vec3(0.5, 0.5, 0.5));
-	auto checker_ground = std::make_shared <tex::Checkers> (vec3(0.2, 0.3, 0.1), vec3(0.9, 0.9, 0.9));
-	world.push(std::make_shared <Sphere> (vec3(0.0, -1000.0, 0.0), 1000.0,
-	std::make_shared <Lambertian> (checker_ground)));
-	
-	for (int a = -11; a < 11; a++) {
-		for (int b = -11; b < 11; b++) {
-			auto choose_mat = Random::real();
-			vec3 center(a + 0.9 * Random::real(), 0.2, b + 0.9 * Random::real());
-			if ((center - vec3(4.0, 0.2, 0.0)).length() > 0.9) {
-				std::shared_ptr <Material> sphere_material;
-				if (choose_mat < 0.8) {
-					auto albedo = vec3d::random() * vec3d::random();
-					sphere_material = std::make_shared <Lambertian> (albedo);
-					auto center_end = center + vec3(0.0, Random::range(0.0, 0.5), 0.0);
-					world.push(std::make_shared <Moving_sphere>
-					(center, center_end, 0.0, 1.0, 0.2, sphere_material));
-				} else if (choose_mat < 0.95) {
-					auto albedo = vec3d::random(0.5, 1.0);
-					auto fuzz = Random::range(0.0, 0.5);
-					sphere_material = std::make_shared <Metal> (albedo, fuzz);
-					world.push(std::make_shared <Sphere> (center, 0.2, sphere_material));
-				} else {
-					sphere_material = std::make_shared <Dielectric> (1.5);
-					world.push(std::make_shared <Sphere> (center, 0.2, sphere_material));
-				}
+	for (int i = 1; i < argc; i++) {
+		std::string str = std::string(argv[i]);
+		
+		if (str.substr(0, 2) == "s=") {
+			str = str.substr(2);
+			std::cerr << "setting scene to '" << str << "'" << std::endl;
+			if (str == "two_spheres") {
+				SCENE = SCENE_TWO_SPHERES;
+			} else if (str == "random_demo") {
+				SCENE = SCENE_RANDOM_DEMO;
+			} else {
+				std::cerr << "unknown scene" << std::endl;
+				continue;
 			}
+			arg_found_scene = true;
+			continue;
 		}
+		
+		std::cerr << "setting thread count to " << argv[i] << std::endl;
+		num_threads = std::stoi(argv[i]);
+		arg_found_tc = true;
 	}
-
-	auto material1 = std::make_shared <Dielectric> (1.5);
-	world.push(std::make_shared <Sphere> (vec3(0.0, 1.0, 0.0), 1.0, material1));
-
-	auto material2 = std::make_shared <Lambertian> (vec3(0.4, 0.2, 0.1));
-	world.push(std::make_shared <Sphere> (vec3(-4.0, 1.0, 0.0), 1.0, material2));
-
-	auto material3 = std::make_shared <Metal> (vec3(0.7, 0.6, 0.5), 0.0);
-	world.push(std::make_shared <Sphere> (vec3(4.0, 1.0, 0.0), 1.0, material3));
-
-	return world;
+	
+	if (!arg_found_scene) {
+		std::cerr << "setting scene to 'two_spheres'" << std::endl;
+	}
+	
+	if (!arg_found_tc) {
+		std::cerr << "setting thread count to 1" << std::endl;
+	}
 }
 
 int main(int argc, char** argv) {
 	
-	assert(argc >= 2);
-	
-	int num_threads = std::stoi(argv[1]);
+	handle_cl_args(argc, argv);
 	
 	gp::init();
 	
@@ -112,14 +115,32 @@ int main(int argc, char** argv) {
 	int samples_per_pixel = 100;
 	int max_depth = 50;
 	
-	Hittable_list world = make_scene();
+	Hittable_list world;
+	vec3 look_from, look_at;
+	double vfov = 40.0;
+	double aperture = 0.0;
 	
-	vec3 look_from = vec3(13.0, 2.0, 3.0);
-	vec3 look_at = vec3(0.0, 0.0, 0.0);
+	switch (SCENE) {
+		case 1: {
+			scene::Two_spheres scen;
+			world = scen.get_world();
+			scen.set_params(look_from, look_at, vfov, aperture);
+			break;
+		}
+		case 2: {
+			scene::Random_demo scen;
+			world = scen.get_world();
+			scen.set_params(look_from, look_at, vfov, aperture);
+			break;
+		}
+		default:
+			std::cerr << "[fatal]: unknown scene id" << std::endl;
+			exit(EXIT_FAILURE);
+	};
+	
 	vec3 vup = vec3(0.0, 1.0, 0.0);
 	double dist_to_focus = 10.0;
-	auto aperture = 0.1;
-	Camera camera(look_from, look_at, vup, 20.0,
+	Camera camera(look_from, look_at, vup, vfov,
 	aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 	
 	//double vp_h = 2.0;
