@@ -4,7 +4,7 @@
 
 #include "AABB.h"
 
-bool AA_rect::hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_record) const {
+bool XY_rect::hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_record) const {
 	double t = (m_k - ray.origin().z()) / ray.direction().z();
 	
 	if (t < t_min || t > t_max) {
@@ -31,7 +31,7 @@ bool AA_rect::hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_r
 	return true;
 }
 
-bool AA_rect::bounding_box(double time_begin, double time_end, AABB& output_box) const {
+bool XY_rect::bounding_box(double time_begin, double time_end, AABB& output_box) const {
 	output_box = AABB(vec3(m_x0, m_y0, m_k - 0.0001), vec3(m_x1, m_y1, m_k + 0.0001));
 	return true;
 }

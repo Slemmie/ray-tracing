@@ -6,13 +6,13 @@
 
 #include <memory>
 
-class AA_rect : public Hittable {
+class XY_rect : public Hittable {
 	
 public:
 	
-	AA_rect() { }
+	XY_rect() { }
 	
-	AA_rect(double _x0, double _x1, double _y0, double _y1, double _k, std::shared_ptr <Material> _material) :
+	XY_rect(double _x0, double _x1, double _y0, double _y1, double _k, std::shared_ptr <Material> _material) :
 	m_material(_material),
 	m_x0(_x0),
 	m_x1(_x1),

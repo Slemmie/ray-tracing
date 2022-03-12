@@ -146,7 +146,7 @@ namespace scene {
 		
 		auto diffuse_light = std::make_shared <Diffuse_light> (vec3(4.0, 4.0, 4.0));
 		
-		result.push(std::make_shared <AA_rect> (3.0, 5.0, 1.0, 3.0, -2.0, diffuse_light));
+		result.push(std::make_shared <XY_rect> (3.0, 5.0, 1.0, 3.0, -2.0, diffuse_light));
 		
 		return result;
 	}
