@@ -5,6 +5,9 @@
 #include "util/vec3.h"
 
 #include "ray.h"
+#include "texture.h"
+
+#include <memory>
 
 struct Hit_record;
 
@@ -22,7 +25,11 @@ class Lambertian : public Material {
 public:
 	
 	Lambertian(const vec3d& _albedo) :
-	m_albedo(_albedo)
+	m_albedo(std::make_shared <tex::Solid_color> _albedo)
+	{ }
+	
+	Lambertian(std::shared_ptr <tex::Texture> _texture) :
+	m_albedo(_texture)
 	{ }
 	
 	virtual bool scatter(const Rayd& ray, const Hit_record& hit_record,
@@ -34,13 +41,13 @@ public:
 		}
 		
 		scattered = Ray(hit_record.point, scatter_direction, ray.time());
-		attenuation = m_albedo;
+		attenuation = m_albedo->at(hit_record.u, hit_record.v, hit_record.point);
 		return true;
 	}
 	
 private:
 	
-	vec3d m_albedo;
+	std::shared_ptr <vec3d> m_albedo;
 	
 };
 
