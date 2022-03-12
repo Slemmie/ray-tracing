@@ -1,5 +1,7 @@
 // axis aligned rectangle surface
 
+#pragma once
+
 #include "util/util.h"
 
 #include "hittable.h"

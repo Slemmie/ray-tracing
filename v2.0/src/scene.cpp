@@ -8,6 +8,7 @@
 #include "sphere.h"
 #include "movable_sphere.h"
 #include "aa_rect.h"
+#include "box.h"
 
 #include <memory>
 
@@ -171,9 +172,12 @@ namespace scene {
 		result.push(std::make_shared <YZ_rect> (0.0, 555.0, 0.0, 555.0, 555.0, green));
 		result.push(std::make_shared <YZ_rect> (0.0, 555.0, 0.0, 555.0, 0.0, red));
 		result.push(std::make_shared <XZ_rect> (213.0, 343.0, 227.0, 332.0, 554.0, light));
-		result.push(std::make_shared <XZ_rect> (0.0, 555.0, 0.0, 555.0,0.0, white));
+		result.push(std::make_shared <XZ_rect> (0.0, 555.0, 0.0, 555.0, 0.0, white));
 		result.push(std::make_shared <XZ_rect> (0.0, 555.0, 0.0, 555.0, 555.0, white));
 		result.push(std::make_shared <XY_rect> (0.0, 555.0, 0.0, 555.0, 555.0, white));
+		
+		result.push(std::make_shared <Box> (vec3(130.0, 0.0, 65.0), vec3(295.0, 165.0, 230.0), white));
+		result.push(std::make_shared <Box> (vec3(265.0, 0.0, 295.0), vec3(430.0, 330.0, 460.0), white));
 		
 		return result;
 	}
