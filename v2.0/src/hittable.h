@@ -45,7 +45,7 @@ public:
 	
 };
 
-class AABB;
+#include "AABB.h"
 
 class Translate : public Hittable {
 	
