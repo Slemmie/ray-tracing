@@ -104,4 +104,18 @@ namespace scene {
 		
 	};
 	
+	class Cornell_smoke : public Scene {
+		
+	public:
+		
+		virtual Hittable_list get_world() override;
+		
+		void set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov, double& _aperture, vec3d& _background);
+		
+		virtual std::string to_string() const override {
+			return "cornell_smoke";
+		}
+		
+	};
+	
 } /// namespace scene
