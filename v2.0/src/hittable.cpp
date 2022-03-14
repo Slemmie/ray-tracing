@@ -79,8 +79,8 @@ bool Rotate_y::hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_
 	vec3 point = hit_record.point;
 	vec3 normal = hit_record.normal;
 	
-	point[0] = m_cos_theta * hit_record.normal[0] + m_sin_theta * hit_record.normal[2];
-	point[2] = -m_sin_theta * hit_record.normal[0] + m_cos_theta * hit_record.normal[2];
+	point[0] = m_cos_theta * hit_record.point[0] + m_sin_theta * hit_record.point[2];
+	point[2] = -m_sin_theta * hit_record.point[0] + m_cos_theta * hit_record.point[2];
 	
 	normal[0] = m_cos_theta * hit_record.normal[0] + m_sin_theta * hit_record.normal[2];
 	normal[2] = -m_sin_theta * hit_record.normal[0] + m_cos_theta * hit_record.normal[2];
