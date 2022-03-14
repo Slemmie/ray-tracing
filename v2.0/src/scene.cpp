@@ -10,6 +10,7 @@
 #include "aa_rect.h"
 #include "box.h"
 #include "constant_medium.h"
+#include "BVH.h"
 
 #include <memory>
 
@@ -241,5 +242,79 @@ namespace scene {
 		_aperture = 0.0;
 		_background = vec3(0.0, 0.0, 0.0);
 	}
+	
+	Hittable_list Random_demo_2::get_world() {
+		Hittable_list boxes1;
+		
+		auto ground = std::make_shared <Lambertian> (vec3(0.48, 0.83, 0.53));
+		
+		const int boxes_dim = 20;
+		for (int i = 0; i < boxes_dim; i++) {
+			for (int j = 0; j < boxes_dim; j++) {
+				double w = 100.0;
+				double x0 = -1000.0 + i * w;
+				double z0 = -1000.0 + j * w;
+				double y0 = 0.0;
+				double x1 = x0 + w;
+				double z1 = z0 + w;
+				double y1 = Random::range(1.0, 101.0);
+				boxes1.push(std::make_shared <Box> (vec3(x0, y0, z0), vec3(x1, y1, z1), ground));
+			}
+		}
+		
+		Hittable_list surfaces;
+		
+		surfaces.push(std::make_shared <BVH_node> (boxes1, 0.0, 1.0));
+		
+		auto light = std::make_shared <Diffuse_light> (vec3(7.0, 7.0, 7.0));
+		surfaces.push(std::make_shared <XZ_rect> (123.0, 423.0, 147.0, 412.0, 554.0, light));
+		
+		auto center1 = vec3(400.0, 400.0, 200.0);
+		auto center2 = center1 + vec3(30.0, 0.0, 0.0);
+		auto moving_sphere_material = std::make_shared <Lambertian> (vec3(0.7, 0.3, 0.1));
+		surfaces.push(std::make_shared <Moving_sphere>
+		(center1, center2, 0.0, 1.0, 50.0, moving_sphere_material));
+		
+		surfaces.push(std::make_shared <Sphere>
+		(vec3(260.0, 150.0, 45.0), 50.0, std::make_shared <Dielectric> (1.5)));
+		surfaces.push(std::make_shared <Sphere>
+		(vec3(0.0, 150.0, 145.0), 50.0, std::make_shared <Metal> (vec3(0.8, 0.8, 0.9), 1.0)));
+		
+		auto boundary = std::make_shared <Sphere> (vec3(360.0, 150.0, 145.0), 70.0,
+		std::make_shared <Dielectric> (1.5));
+		surfaces.push(boundary);
+		surfaces.push(std::make_shared <Constant_medium> (boundary, 0.2, vec3(0.2, 0.4, 0.9)));
+		boundary = std::make_shared <Sphere> (vec3(0.0, 0.0, 0.0), 5000.0, std::make_shared <Dielectric> (1.5));
+		surfaces.push(std::make_shared <Constant_medium> (boundary, 0.0001, vec3(1.0, 1.0, 1.0)));
+		
+		auto earth_material = std::make_shared <Lambertian>
+		(std::make_shared <tex::Image> ("./img/earth_map.jpg"));
+		surfaces.push(std::make_shared <Sphere> (vec3(400.0, 200.0, 400.0), 100.0, earth_material));
+		auto perlin_texture = std::make_shared <tex::Noise> (0.1);
+		surfaces.push(std::make_shared <Sphere> (vec3(220.0, 280.0, 300.0), 80.0,
+		std::make_shared <Lambertian> (perlin_texture)));
+		
+		Hittable_list boxes2;
+		auto white = std::make_shared <Lambertian> (vec3(0.73, 0.73, 0.73));
+		int ns = 1000;
+		for (int i = 0; i < ns; i++) {
+			boxes2.push(std::make_shared <Sphere> (vec3d::random(0.0, 165.0), 10.0, white));
+		}
+		
+		surfaces.push(std::make_shared <Translate> (std::make_shared <Rotate_y>
+		(std::make_shared <BVH_node> (boxes2, 0.0, 1.0), 15.0), vec3(-100.0, 270.0, 395.0)));
+		
+		return surfaces;
+	}
+	
+	void Random_demo_2::set_params(vec3d& _look_from, vec3d& _look_at, double& _vfov,
+	double& _aperture, vec3d& _background) {
+		_look_from = vec3(478.0, 278.0, -600.0);
+		_look_at = vec3(278.0, 278.0, 0.0);
+		_vfov = 40.0;
+		_aperture = 0.0;
+		_background = vec3(0.0, 0.0, 0.0);
+	}
+	
 	
 } /// namespace scene

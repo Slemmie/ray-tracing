@@ -8,7 +8,7 @@ BVH_node::BVH_node(const std::vector <std::shared_ptr <Hittable>>& _surface_sour
 size_t _ptr_begin, size_t _ptr_end, double _time_begin, double _time_end) {
 	auto surfaces = _surface_source;
 	
-	int axis = Random::range_int(0, 3);
+	int axis = Random::range_int(0, 2);
 	auto cmp =
 	axis == 0 ?
 	m_box_compare <0> :
@@ -16,7 +16,7 @@ size_t _ptr_begin, size_t _ptr_end, double _time_begin, double _time_end) {
 	m_box_compare <1> :
 	m_box_compare <2> ;
 	
-	size_t surface_size = _ptr_begin - _ptr_end;
+	size_t surface_size = _ptr_end - _ptr_begin;
 	
 	switch (surface_size) {
 		case 1:

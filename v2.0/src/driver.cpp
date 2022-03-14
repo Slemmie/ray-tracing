@@ -34,8 +34,9 @@
 #define SCENE_SIMPLE_LIGHT 5
 #define SCENE_CORNELL_BOX 6
 #define SCENE_CORNELL_SMOKE 7
+#define SCENE_RANDOM_DEMO_2 8
 
-int SCENE = SCENE_CORNELL_SMOKE;
+int SCENE = SCENE_RANDOM_DEMO_2;
 
 //////////////////////////////////
 
@@ -96,6 +97,8 @@ void handle_cl_args(int argc, char** argv) {
 				SCENE = SCENE_CORNELL_BOX;
 			} else if (str == scene::Cornell_smoke().to_string()) {
 				SCENE = SCENE_CORNELL_SMOKE;
+			} else if (str == scene::Random_demo_2().to_string()) {
+				SCENE = SCENE_RANDOM_DEMO_2;
 			} else {
 				std::cerr << "[warning]: unknown scene name provided" << std::endl;
 				continue;
@@ -118,7 +121,8 @@ void handle_cl_args(int argc, char** argv) {
 			scene::Earth().to_string(),              // SCENE_EARTH
 			scene::Simple_light().to_string(),       // SCENE_SIMPLE_LIGHT
 			scene::Cornell_box().to_string(),        // SCENE_CORNELL_BOX
-			scene::Cornell_smoke().to_string()       // SCENE_CORNELL_BOX
+			scene::Cornell_smoke().to_string(),      // SCENE_CORNELL_BOX
+			scene::Random_demo_2().to_string()       // SCENE_CORNELL_BOX
 		};
 		std::cerr << "[info]: setting scene to '" << sc_to_s[SCENE] << "'" << std::endl;
 	}
@@ -135,9 +139,6 @@ int main(int argc, char** argv) {
 	gp::init();
 	
 	gp::Single_texture_static_renderer* stst = new gp::Single_texture_static_renderer;
-	
-	//int width = gp::window_width;
-	//int height = gp::window_height;
 	
 	double aspect_ratio = 16.0 / 9.0;
 	int im_w = 400;
@@ -200,6 +201,15 @@ int main(int argc, char** argv) {
 			im_w = 600;
 			break;
 		}
+		case SCENE_RANDOM_DEMO_2: {
+			scene::Random_demo_2 scen;
+			world = scen.get_world();
+			scen.set_params(look_from, look_at, vfov, aperture, background);
+			samples_per_pixel = 10'000;
+			aspect_ratio = 1.0;
+			im_w = 800;
+			break;
+		}
 		default:
 			std::cerr << "[fatal]: unknown scene id" << std::endl;
 			exit(EXIT_FAILURE);
@@ -211,9 +221,6 @@ int main(int argc, char** argv) {
 	double dist_to_focus = 10.0;
 	Camera camera(look_from, look_at, vup, vfov,
 	aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
-	
-	//double vp_h = 2.0;
-	//double vp_w = aspect_ratio * vp_h;
 	
 	vec3d scr[im_w * im_h];
 	
@@ -292,6 +299,7 @@ int main(int argc, char** argv) {
 		thread.join();
 	}
 	
+	// delete before terminating glfw through gp::terminate()
 	delete(stst);
 	
 	gp::terminate();
