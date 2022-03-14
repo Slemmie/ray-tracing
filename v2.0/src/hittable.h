@@ -67,3 +67,29 @@ private:
 	vec3d m_offset;
 	
 };
+
+class Rotate_y : public Hittable {
+	
+public:
+	
+	Rotate_y(std::shared_ptr <Hittable> _hittable, double angle);
+	
+	virtual bool hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_record) const override;
+	
+	virtual bool bounding_box(double time_begin, double time_end, AABB& output_box) const {
+		output_box = m_bounding_box;
+		return m_has_box;
+	}
+	
+private:
+	
+	std::shared_ptr <Hittable> m_hittable;
+	
+	double m_sin_theta;
+	double m_cos_theta;
+	
+	bool m_has_box;
+	
+	AABB m_bounding_box;
+	
+};
