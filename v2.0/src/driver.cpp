@@ -136,7 +136,7 @@ int main(int argc, char** argv) {
 	//int height = gp::window_height;
 	
 	double aspect_ratio = 16.0 / 9.0;
-	int im_w = 1200;
+	int im_w = 400;
 	int samples_per_pixel = 100;
 	int max_depth = 50;
 	
@@ -184,6 +184,7 @@ int main(int argc, char** argv) {
 			scen.set_params(look_from, look_at, vfov, aperture, background);
 			samples_per_pixel = 200;
 			aspect_ratio = 1.0;
+			im_w = 600;
 			break;
 		}
 		default:

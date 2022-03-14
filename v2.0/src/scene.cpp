@@ -176,8 +176,18 @@ namespace scene {
 		result.push(std::make_shared <XZ_rect> (0.0, 555.0, 0.0, 555.0, 555.0, white));
 		result.push(std::make_shared <XY_rect> (0.0, 555.0, 0.0, 555.0, 555.0, white));
 		
-		result.push(std::make_shared <Box> (vec3(130.0, 0.0, 65.0), vec3(295.0, 165.0, 230.0), white));
-		result.push(std::make_shared <Box> (vec3(265.0, 0.0, 295.0), vec3(430.0, 330.0, 460.0), white));
+		std::shared_ptr <Hittable> box[2];
+		
+		box[0] = std::make_shared <Box> (vec3(0.0, 0.0, 0.0), vec3(165.0, 330.0, 165.0), white);
+		box[0] = std::make_shared <Rotate_y> (box[0], 15.0);
+		box[0] = std::make_shared <Translate> (box[0], vec3(265.0, 0.0, 295.0));
+		
+		box[1] = std::make_shared <Box> (vec3(0.0, 0.0, 0.0), vec3(165.0, 165.0, 165.0), white);
+		box[1] = std::make_shared <Rotate_y> (box[1], -18.0);
+		box[1] = std::make_shared <Translate> (box[1], vec3(130.0, 0.0, 65.0));
+		
+		result.push(box[0]);
+		result.push(box[1]);
 		
 		return result;
 	}

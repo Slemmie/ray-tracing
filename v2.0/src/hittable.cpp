@@ -25,7 +25,9 @@ bool Translate::bounding_box(double time_begin, double time_end, AABB& output_bo
 	return true;
 }
 
-Rotate_y::Rotate_y(std::shared_ptr <Hittable> _hittable, double angle) {
+Rotate_y::Rotate_y(std::shared_ptr <Hittable> _hittable, double angle) :
+m_hittable(_hittable)
+{
 	double radians = deg_to_rad(angle);
 	m_sin_theta = sin(radians);
 	m_cos_theta = cos(radians);

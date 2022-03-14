@@ -191,7 +191,7 @@ public:
 	
 	bool near_zero() const {
 		constexpr double bound = 1e-8;
-		return fabs((*this)[0] < bound) && fabs((*this)[1] < bound) && fabs((*this)[2] < bound);
+		return (fabs((*this)[0]) < bound) && (fabs((*this)[1]) < bound) && (fabs((*this)[2]) < bound);
 	}
 	
 	static constexpr vec3 <A> reflect(const vec3 <A>& v, const vec3 <A>& n) {
