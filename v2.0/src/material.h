@@ -153,7 +153,7 @@ class Isotropic : public Material {
 public:
 	
 	Isotropic(const vec3d& _color) :
-	m_albedo(std::make_shared <Solid_color> (_color))
+	m_albedo(std::make_shared <tex::Solid_color> (_color))
 	{ }
 	
 	Isotropic(std::shared_ptr <tex::Texture> _texture) :
@@ -162,7 +162,7 @@ public:
 	
 	virtual bool scatter(const Rayd& ray, const Hit_record& hit_record,
 	vec3d& attenuation, Rayd& scattered) const override {
-		scattered = Ray(hit_record.point, vec3::random_in_unit_sphere(), ray.time());
+		scattered = Rayd(hit_record.point, vec3d::random_in_unit_sphere(), ray.time());
 		
 		attenuation = m_albedo->at(hit_record.u, hit_record.v, hit_record.point);
 		
@@ -171,6 +171,6 @@ public:
 	
 private:
 	
-	std::shared_ptr <Texture> m_albedo;
+	std::shared_ptr <tex::Texture> m_albedo;
 	
 };
