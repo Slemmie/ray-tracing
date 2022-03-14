@@ -44,3 +44,24 @@ public:
 	virtual bool bounding_box(double time_begin, double time_end, AABB& result_box) const = 0;
 	
 };
+
+class Translate : public Hittable {
+	
+public:
+	
+	Translate(std::shared_ptr <Hittable> _hittable, const vec3d& displacement) :
+	m_hittable(_hittable),
+	m_offset(_displacement)
+	{ }
+	
+	virtual bool hit(const Rayd& ray, double t_min, double t_max, Hit_record& hit_record) const override;
+	
+	virtual bool bounding_box(double time_begin, double time_end, AABB& output_box) const override;
+	
+private:
+	
+	std::shared_ptr <Hittable> m_hittable;
+	
+	vec3d m_offset;
+	
+};
