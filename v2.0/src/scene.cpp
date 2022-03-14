@@ -316,5 +316,4 @@ namespace scene {
 		_background = vec3(0.0, 0.0, 0.0);
 	}
 	
-	
 } /// namespace scene
