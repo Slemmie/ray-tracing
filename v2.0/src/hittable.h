@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "util/vec3.h"
+#include "util/util.h"
 #include "ray.h"
 
 #include <memory>
