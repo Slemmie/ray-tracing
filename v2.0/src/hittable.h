@@ -45,11 +45,13 @@ public:
 	
 };
 
+class AABB;
+
 class Translate : public Hittable {
 	
 public:
 	
-	Translate(std::shared_ptr <Hittable> _hittable, const vec3d& displacement) :
+	Translate(std::shared_ptr <Hittable> _hittable, const vec3d& _displacement) :
 	m_hittable(_hittable),
 	m_offset(_displacement)
 	{ }
